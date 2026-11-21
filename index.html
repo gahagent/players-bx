@@ -1,0 +1,1541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Player's Box Filming Times</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: one phone-width column. Pick a week, see who has submitted for it, then a
+   seven-day sheet with hours down the side. Optic yellow marks "in"; court blue carries the rest. */
+:root {
+  --bg: #F2F5FA;
+  --surface: #FFFFFF;
+  --ink: #0F1F3D;
+  --muted: #56667F;
+  --line: #D3DBE8;
+  --court: #1D5BBA;
+  --ball: #D9F24B;
+  --on-ball: #0F1F3D;
+  --warn: #A85A00;
+  --font-display: "Big Shoulders Display", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "Instrument Sans", -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0A152B;
+    --surface: #13233F;
+    --ink: #EEF3FB;
+    --muted: #9FB1CE;
+    --line: #2B3E60;
+    --court: #74A8F7;
+    --ball: #D9F24B;
+    --on-ball: #0F1F3D;
+    --warn: #F0B45A;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0A152B;
+  --surface: #13233F;
+  --ink: #EEF3FB;
+  --muted: #9FB1CE;
+  --line: #2B3E60;
+  --court: #74A8F7;
+  --ball: #D9F24B;
+  --on-ball: #0F1F3D;
+  --warn: #F0B45A;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.45;
+}
+button, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+:focus-visible { outline: 3px solid var(--court); outline-offset: 2px; }
+[hidden] { display: none !important; }
+
+.wrap {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 20px 16px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Header */
+.eyebrow {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--court);
+}
+h1 {
+  margin: 2px 0 6px;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 46px;
+  line-height: 0.95;
+  letter-spacing: 0.005em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+.lede { margin: 0; color: var(--muted); font-size: 15px; max-width: 46ch; }
+.lede strong { color: var(--ink); font-weight: 600; }
+.baseline {
+  height: 10px;
+  border-bottom: 3px solid var(--ink);
+  position: relative;
+  margin-top: 12px;
+}
+.baseline::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 3px;
+  height: 10px;
+  background: var(--ink);
+}
+
+/* Numbered steps: one card each, in the order you do them */
+.step {
+  background: var(--surface);
+  border: 1.5px solid var(--line);
+  border-radius: 14px;
+  padding: 14px 12px;
+  gap: 12px;
+}
+.step.next { border-color: var(--court); box-shadow: 0 0 0 1.5px var(--court); }
+.step.wait > :not(.sh):not(.tabs) { opacity: 0.45; pointer-events: none; }
+.sh { display: flex; align-items: center; gap: 10px; }
+.num {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 19px;
+  line-height: 1;
+}
+.step.next .num { background: var(--court); }
+h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 24px;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+}
+.sh .opt { margin-left: auto; font-size: 12px; font-weight: 600; color: var(--muted); }
+.step .tabs, .step select, .step textarea, .step .who button, .step .weeks button, .step .hr, .step .cell { background: var(--bg); }
+.step .tabs button { background: transparent; }
+.step .tabs button[aria-selected="true"], .step .who button[aria-pressed="true"], .step .weeks button[aria-pressed="true"] { background: var(--ink); }
+.step .best button, .step .notes div, .step .empty { background: var(--bg); }
+.step .best button.full { background: var(--ball); }
+h3 {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.block { display: flex; flex-direction: column; gap: 8px; }
+section { display: flex; flex-direction: column; gap: 16px; }
+.hint { margin: 0; font-size: 13px; color: var(--muted); }
+
+/* Notices */
+.notice {
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--warn);
+  background: var(--surface);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 14px;
+}
+.locked {
+  background: var(--ball);
+  color: var(--on-ball);
+  border-radius: 10px;
+  padding: 12px 14px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+}
+.locked .k { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
+.locked .v { font-family: var(--font-display); font-weight: 800; font-size: 26px; line-height: 1.05; text-transform: uppercase; }
+.locked .s { font-size: 13px; font-weight: 500; }
+.locked button {
+  flex: none;
+  background: transparent;
+  color: var(--on-ball);
+  border: 1.5px solid var(--on-ball);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* Week picker */
+.weeks { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.weeks button {
+  background: var(--surface);
+  border: 1.5px solid var(--line);
+  border-radius: 10px;
+  padding: 9px 4px 8px 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+  text-align: left;
+  line-height: 1.2;
+  min-width: 0;
+  overflow: hidden;
+}
+.weeks .wl { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.weeks .wr { font-family: var(--font-display); font-weight: 800; font-size: clamp(12px, 3.5vw, 16px); text-transform: uppercase; white-space: nowrap; }
+.weeks .ws { font-size: 12px; font-weight: 600; color: var(--muted); }
+.weeks .ws.unsent { color: var(--warn); }
+.weeks button[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+.weeks button[aria-pressed="true"] .wl,
+.weeks button[aria-pressed="true"] .ws { color: var(--bg); opacity: 0.8; }
+
+/* Who has submitted */
+.progress { display: flex; flex-direction: column; gap: 8px; }
+.ptop { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.pcount { font-family: var(--font-display); font-weight: 800; font-size: 26px; line-height: 1; text-transform: uppercase; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.pnote { font-size: 12px; font-weight: 600; color: var(--muted); text-align: right; }
+.pbar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.pseg { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.pseg .track { height: 12px; border-radius: 999px; border: 1.5px dashed var(--muted); background: transparent; margin-bottom: 4px; }
+.pseg.in .track { background: var(--ball); border: 1.5px solid var(--ink); }
+.pseg b { font-size: 14px; line-height: 1.2; }
+.pseg span { font-size: 12px; color: var(--muted); line-height: 1.2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pseg .where { color: var(--court); font-weight: 600; }
+.pseg.in span { color: var(--ink); }
+
+/* Tabs */
+.tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 4px;
+}
+.tabs button {
+  border: 0;
+  background: transparent;
+  border-radius: 9px;
+  padding: 10px 8px;
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--muted);
+}
+.tabs button[aria-selected="true"] { background: var(--ink); color: var(--bg); }
+
+/* Who are you */
+.who { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.who button {
+  background: var(--surface);
+  border: 1.5px solid var(--line);
+  border-radius: 10px;
+  padding: 12px 4px;
+  font-weight: 700;
+  font-size: 16px;
+}
+.who button[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+
+/* Week sheet: hours down, seven days across */
+.sheet {
+  display: grid;
+  grid-template-columns: max-content repeat(7, minmax(0, 1fr));
+  gap: 3px;
+}
+.sheet.off { pointer-events: none; }
+.tm {
+  padding-right: 6px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.tm span { min-width: 30px; text-align: right; }
+.tm.head { align-items: flex-end; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); padding-bottom: 4px; }
+.dh {
+  border: 0;
+  background: transparent;
+  padding: 0 0 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  line-height: 1;
+  gap: 1px;
+  min-width: 0;
+}
+div.dh { cursor: default; }
+.dh .wd { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.dh .dn { font-family: var(--font-display); font-weight: 800; font-size: 24px; }
+.dh.today .wd { color: var(--court); }
+.dh.gone { opacity: 0.4; }
+
+.hr, .cell {
+  height: 36px;
+  background: var(--surface);
+  border: 1.5px solid var(--line);
+  border-radius: 7px;
+  padding: 0;
+  min-width: 0;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+}
+/* One corner per person, always in the same place */
+.q {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-style: normal;
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  min-width: 0;
+}
+.q.on { background: color-mix(in srgb, var(--court) 30%, var(--surface)); }
+.q.me, .full .q.on { background: var(--ball); color: var(--on-ball); }
+.hr[aria-pressed="true"] { border-color: var(--ink); }
+.hr:disabled { opacity: 0.35; cursor: default; border-style: dashed; }
+.full { border-color: var(--ink); }
+.cell.past { opacity: 0.35; }
+.cell.sel { border-color: var(--ink); box-shadow: 0 0 0 2px var(--ink); }
+.cell.lock { border-color: var(--court); box-shadow: 0 0 0 2px var(--court); }
+
+.legend { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--muted); }
+.legend .key {
+  flex: none;
+  width: 42px;
+  height: 36px;
+  border: 1.5px solid var(--line);
+  border-radius: 7px;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  color: var(--ink);
+  background: var(--surface);
+}
+.legend b { color: var(--ink); }
+
+select {
+  width: 100%;
+  font: inherit;
+  font-weight: 600;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1.5px solid var(--line);
+  border-radius: 10px;
+  padding: 12px;
+  min-height: 46px;
+}
+.linkbtn {
+  align-self: flex-start;
+  background: transparent;
+  border: 0;
+  padding: 6px 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--court);
+  text-decoration: underline;
+  text-align: left;
+}
+.linkbtn:disabled { color: var(--muted); text-decoration: none; cursor: default; }
+textarea {
+  width: 100%;
+  min-height: 76px;
+  background: var(--surface);
+  border: 1.5px solid var(--line);
+  border-radius: 10px;
+  padding: 10px 12px;
+  resize: vertical;
+}
+textarea::placeholder { color: var(--muted); }
+
+/* Sticky action bar */
+.bar {
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  margin: 0 -16px;
+  padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 0px));
+  background: var(--bg);
+  border-top: 1px solid var(--line);
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+}
+.bar .t { font-size: 13px; color: var(--muted); min-width: 0; }
+.bar .t strong { display: block; color: var(--ink); font-size: 14px; }
+.primary {
+  flex: none;
+  background: var(--court);
+  color: var(--bg);
+  border: 0;
+  border-radius: 10px;
+  padding: 13px 18px;
+  font-weight: 700;
+  font-size: 15px;
+}
+.primary:disabled { background: var(--line); color: var(--muted); cursor: default; }
+
+/* Group view */
+.best { display: flex; flex-direction: column; gap: 6px; }
+.best button {
+  text-align: left;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px 12px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+}
+.best button.full { background: var(--ball); border-color: var(--ball); color: var(--on-ball); }
+.best .a { font-weight: 700; }
+.best .b { font-size: 13px; opacity: 0.8; }
+.best .c { font-family: var(--font-display); font-weight: 800; font-size: 24px; flex: none; font-variant-numeric: tabular-nums; }
+.empty {
+  background: var(--surface);
+  border: 1px dashed var(--line);
+  border-radius: 10px;
+  padding: 14px 12px;
+  color: var(--muted);
+  font-size: 14px;
+}
+.notes { display: flex; flex-direction: column; gap: 6px; }
+.notes div {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+.notes b { display: block; font-size: 13px; color: var(--muted); }
+
+@media (max-width: 360px) {
+  h1 { font-size: 40px; }
+  .q { font-size: 8px; }
+  .weeks button { padding-left: 5px; padding-right: 4px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .tabs button, .who button, .weeks button { transition: background-color 0.12s, border-color 0.12s; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">The Player's Box</p>
+    <h1>When can we film?</h1>
+    <p class="lede">Work down the steps: who you are, your time zone, the week, then the hours you could record.</p>
+    <div class="baseline" aria-hidden="true"></div>
+  </header>
+
+  <div class="notice" id="notice" hidden></div>
+
+  <section class="step" id="step1">
+    <div class="sh"><span class="num" aria-hidden="true">1</span><h2 id="whoLabel">Who are you?</h2></div>
+    <div class="who" id="who" role="group" aria-labelledby="whoLabel"></div>
+  </section>
+
+  <section class="step" id="step2">
+    <div class="sh"><span class="num" aria-hidden="true">2</span><h2 id="zoneLabel">Your time zone</h2></div>
+    <select id="zone" aria-labelledby="zoneLabel"></select>
+    <p class="hint">Every time on this page shows in this zone. Change it whenever you travel.</p>
+  </section>
+
+  <section class="step" id="step3">
+    <div class="sh"><span class="num" aria-hidden="true">3</span><h2 id="weekLabel">Which week?</h2></div>
+    <div class="weeks" id="weeks" role="group" aria-labelledby="weekLabel"></div>
+    <div class="progress">
+      <div class="ptop">
+        <div class="pcount" id="pCount">0 of 4 submitted</div>
+        <div class="pnote" id="pNote"></div>
+      </div>
+      <div class="pbar" id="pBar" role="img"></div>
+    </div>
+    <div class="locked" id="locked" hidden>
+      <div>
+        <div class="k">Filming locked in</div>
+        <div class="v" id="lockedWhen"></div>
+        <div class="s" id="lockedSub"></div>
+      </div>
+      <button type="button" id="unlockBtn">Clear</button>
+    </div>
+  </section>
+
+  <section class="step" id="step4">
+    <div class="sh"><span class="num" aria-hidden="true">4</span><h2 id="gridLabel">Pick your hours</h2></div>
+    <div class="tabs" role="tablist" aria-label="Whose hours">
+      <button type="button" role="tab" id="tabMine" aria-controls="mine" aria-selected="true">My hours</button>
+      <button type="button" role="tab" id="tabGroup" aria-controls="group" aria-selected="false">Everyone</button>
+    </div>
+
+    <div class="block" id="mine" role="tabpanel" aria-labelledby="tabMine">
+      <p class="hint" id="gridHint"></p>
+      <p class="hint" id="othersHint"></p>
+      <div class="legend" data-legend></div>
+      <div class="sheet" id="myGrid" role="group" aria-labelledby="gridLabel"></div>
+      <button type="button" class="linkbtn" data-early>Show 12am to 7am</button>
+    </div>
+
+    <div class="block" id="group" role="tabpanel" aria-labelledby="tabGroup" hidden>
+      <h3 id="bestLabel">Best windows</h3>
+      <div class="best" id="best"></div>
+      <h3 id="allLabel">Every hour</h3>
+      <p class="hint">Each box has a corner per person, filled in when she's free. Tap an hour to see who's in.</p>
+      <div class="legend" data-legend></div>
+      <div class="sheet" id="groupGrid" role="group" aria-labelledby="allLabel"></div>
+      <button type="button" class="linkbtn" data-early>Show 12am to 7am</button>
+      <div class="block" id="notesBlock" hidden>
+        <h3>Notes</h3>
+        <div class="notes" id="notes"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="step" id="step5">
+    <div class="sh"><span class="num" aria-hidden="true">5</span><h2><label for="note">Add a note</label></h2><span class="opt">Optional</span></div>
+    <textarea id="note" maxlength="500" placeholder="Travel days, match days, a hard stop, where you'll be"></textarea>
+    <p class="hint">Then tap Submit in the bar at the bottom of the screen.</p>
+  </section>
+
+  <div class="bar" id="myBar">
+    <div class="t" id="myBarText"></div>
+    <button type="button" class="primary" id="submitBtn" disabled>Submit times</button>
+  </div>
+  <div class="bar" id="groupBar" hidden>
+    <div class="t" id="groupBarText"></div>
+    <button type="button" class="primary" id="lockBtn">Lock it in</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  // ================= SETUP =================
+  // Paste your two Supabase values between the quotes.
+  var SUPABASE_URL = "https://ydbmtlmieaqxfuvtffdz.supabase.co";
+  var SUPABASE_KEY = "sb_publishable_T0QqGmHUoLKuOEA-QYFvwQ_MeVOf564";
+  // =========================================
+
+  // ---------- Setup ----------
+  var HOSTS = [
+    { id: "des", name: "Des", ini: "DK" },
+    { id: "jenny", name: "Jenny", ini: "JB" },
+    { id: "jess", name: "Jess", ini: "JP" },
+    { id: "madi", name: "Madi", ini: "MK" }
+  ];
+  var HOUR = 3600000;
+  var DAY_START = 7;   // rows shown by default: 7am to midnight in the chosen zone
+  var WEEK_LABELS = ["This week", "Next week", "Week after"];
+  var LEGACY_TZ = "America/New_York"; // earlier versions saved hours as Eastern "date|hour"
+  var LS_ZONE = "tpb-zone";
+  var ZONES = [
+    { tz: "America/New_York", label: "Eastern · New York, Florida", short: "Eastern" },
+    { tz: "America/Chicago", label: "Central · Chicago, Texas", short: "Central" },
+    { tz: "America/Denver", label: "Mountain · Denver", short: "Mountain" },
+    { tz: "America/Phoenix", label: "Arizona · Phoenix", short: "Arizona" },
+    { tz: "America/Los_Angeles", label: "Pacific · Los Angeles", short: "Pacific" },
+    { tz: "Pacific/Honolulu", label: "Hawaii", short: "Hawaii" },
+    { tz: "America/Mexico_City", label: "Mexico City", short: "Mexico City" },
+    { tz: "America/Sao_Paulo", label: "São Paulo", short: "São Paulo" },
+    { tz: "Europe/London", label: "London", short: "London" },
+    { tz: "Europe/Paris", label: "Paris · Madrid · Rome · Berlin", short: "Europe (CET)" },
+    { tz: "Europe/Athens", label: "Athens", short: "Athens" },
+    { tz: "Asia/Dubai", label: "Dubai · Abu Dhabi", short: "Dubai" },
+    { tz: "Asia/Riyadh", label: "Doha · Riyadh", short: "Doha/Riyadh" },
+    { tz: "Asia/Kolkata", label: "India", short: "India" },
+    { tz: "Asia/Singapore", label: "Singapore · Hong Kong · Beijing", short: "Singapore" },
+    { tz: "Asia/Tokyo", label: "Tokyo · Seoul", short: "Tokyo/Seoul" },
+    { tz: "Australia/Perth", label: "Perth", short: "Perth" },
+    { tz: "Australia/Adelaide", label: "Adelaide", short: "Adelaide" },
+    { tz: "Australia/Brisbane", label: "Brisbane", short: "Brisbane" },
+    { tz: "Australia/Sydney", label: "Melbourne · Sydney", short: "Melb/Sydney" },
+    { tz: "Pacific/Auckland", label: "Auckland", short: "Auckland" }
+  ];
+
+  // ---------- Time helpers ----------
+  function pad(n) { return (n < 10 ? "0" : "") + n; }
+  var fmtCache = {};
+  function tzParts(ms, tz) {
+    var f = fmtCache[tz] || (fmtCache[tz] = new Intl.DateTimeFormat("en-US", {
+      timeZone: tz, hourCycle: "h23",
+      year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit"
+    }));
+    var p = {};
+    f.formatToParts(new Date(ms)).forEach(function (x) { p[x.type] = x.value; });
+    return { y: +p.year, m: +p.month, d: +p.day, h: (+p.hour) % 24, mi: +p.minute, date: p.year + "-" + p.month + "-" + p.day };
+  }
+  function zoneWorks(tz) { try { tzParts(Date.now(), tz); return true; } catch (e) { return false; } }
+  function zonedToUtc(dateStr, hour, tz) {
+    var a = dateStr.split("-").map(Number);
+    var target = Date.UTC(a[0], a[1] - 1, a[2], hour);
+    var guess = target;
+    for (var i = 0; i < 2; i++) {
+      var p = tzParts(guess, tz);
+      guess += target - Date.UTC(p.y, p.m - 1, p.d, p.h, p.mi);
+    }
+    return guess;
+  }
+  function addDays(dateStr, n) {
+    var a = dateStr.split("-").map(Number);
+    return new Date(Date.UTC(a[0], a[1] - 1, a[2] + n)).toISOString().slice(0, 10);
+  }
+  function dayBits(dateStr) {
+    var a = dateStr.split("-").map(Number);
+    var d = new Date(Date.UTC(a[0], a[1] - 1, a[2], 12));
+    return {
+      wd: d.toLocaleDateString("en-US", { timeZone: "UTC", weekday: "short" }),
+      mo: d.toLocaleDateString("en-US", { timeZone: "UTC", month: "short" }),
+      dn: a[2],
+      dow: d.getUTCDay()
+    };
+  }
+  // 16 -> "4pm", 12 -> "12pm", 0 -> "12am"
+  function clock(h, mi) {
+    h = ((h % 24) + 24) % 24;
+    return (h % 12 || 12) + (mi ? ":" + pad(mi) : "") + (h < 12 ? "am" : "pm");
+  }
+
+  // ---------- The chosen time zone ----------
+  // Every hour is stored as a whole UTC hour (hours since 1970), so one saved hour means
+  // the same moment for everyone. The page only changes how those hours are labelled.
+  var DEVICE_TZ = "America/New_York";
+  try { DEVICE_TZ = Intl.DateTimeFormat().resolvedOptions().timeZone || DEVICE_TZ; } catch (e) {}
+  if (!zoneWorks(DEVICE_TZ)) DEVICE_TZ = "America/New_York";
+  if (!ZONES.some(function (z) { return z.tz === DEVICE_TZ; })) {
+    var city = DEVICE_TZ.split("/").pop().replace(/_/g, " ");
+    ZONES.unshift({ tz: DEVICE_TZ, label: city + " · this device", short: city });
+  }
+  var zone = DEVICE_TZ;
+  try {
+    var savedZone = localStorage.getItem(LS_ZONE);
+    if (savedZone && ZONES.some(function (z) { return z.tz === savedZone; })) zone = savedZone;
+  } catch (e) {}
+  function zoneShort(tz) {
+    for (var i = 0; i < ZONES.length; i++) if (ZONES[i].tz === tz) return ZONES[i].short;
+    return typeof tz === "string" && tz ? tz.split("/").pop().replace(/_/g, " ") : "";
+  }
+
+  function keyAt(dateStr, hour) { return Math.ceil(zonedToUtc(dateStr, hour, zone) / HOUR); }
+  function at(key) { return tzParts(key * HOUR, zone); }
+  function clockOf(key) { var p = at(key); return clock(p.h, p.mi); }
+  function shortClockOf(key) { return clockOf(key).replace("m", ""); }
+  function rangeOf(a, b) {
+    var x = clockOf(a), y = clockOf(b);
+    if (x.slice(-2) === y.slice(-2)) x = x.slice(0, -2);
+    return x + "–" + y;
+  }
+  function dayOf(key) { var d = dayBits(at(key).date); return d.wd + " " + d.mo + " " + d.dn; }
+  function isPast(key) { return (key + 1) * HOUR <= Date.now(); }
+
+  // ---------- Weeks: Monday to Sunday in the chosen zone ----------
+  var TODAY, WEEKS;
+  function buildWeeks() {
+    TODAY = tzParts(Date.now(), zone).date;
+    var monday = addDays(TODAY, -((dayBits(TODAY).dow + 6) % 7));
+    WEEKS = WEEK_LABELS.map(function (label, i) {
+      var start = addDays(monday, i * 7), days = [];
+      for (var j = 0; j < 7; j++) days.push(addDays(start, j));
+      var a = dayBits(days[0]), b = dayBits(days[6]);
+      return {
+        id: start,
+        label: label,
+        days: days,
+        from: keyAt(days[0], 0),
+        to: keyAt(addDays(days[6], 1), 0),
+        range: a.mo + " " + a.dn + "–" + (a.mo === b.mo ? "" : b.mo + " ") + b.dn
+      };
+    });
+  }
+  buildWeeks();
+  function weekById(id) { for (var i = 0; i < WEEKS.length; i++) if (WEEKS[i].id === id) return WEEKS[i]; return null; }
+  function inWeek(week, key) { return key >= week.from && key < week.to; }
+
+  // ---------- State ----------
+  var state = {
+    view: "mine",
+    me: null,
+    week: (WEEKS.filter(function (w) { return !isPast(w.to - 1); })[0] || WEEKS[0]).id,
+    avail: {},            // weekId -> hostId -> { slots:Set, note, tz, updatedAt }
+    free: {},             // hostId -> Set of every hour she has submitted, across weeks
+    locks: [],            // [{ id, key }]
+    drafts: {},           // weekId -> { slots:Set, note, dirty } for the picked name
+    early: false,         // show 12am to 7am rows
+    saving: false,
+    selected: null,
+    canWrite: null,       // true | false | null (not told)
+    dbState: "connecting" // connecting | ready | slow | none | revoked
+  };
+  var db = null;
+
+  // ---------- DOM ----------
+  function $(id) { return document.getElementById(id); }
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  }
+  var noteEl = $("note"), zoneEl = $("zone");
+
+  function hostName(id) { for (var i = 0; i < HOSTS.length; i++) if (HOSTS[i].id === id) return HOSTS[i].name; return id; }
+  function list(names) {
+    if (names.length <= 1) return names.join("");
+    return names.slice(0, -1).join(", ") + " and " + names[names.length - 1];
+  }
+  function hoursText(n) { return n + (n === 1 ? " hour" : " hours"); }
+  function whenText(ms) {
+    var d = new Date(ms);
+    return d.toLocaleDateString("en-US", { month: "short", day: "numeric" }) + ", " +
+      d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+  }
+  function writable() { return !!db && state.canWrite !== false && state.dbState !== "revoked"; }
+
+  // ---------- Data lookups ----------
+  function entry(weekId, hostId) { var w = state.avail[weekId]; return w ? w[hostId] : null; }
+  function submitted(weekId, hostId) { var a = entry(weekId, hostId); return !!(a && a.updatedAt); }
+  function submittedCount(weekId) { return HOSTS.filter(function (h) { return submitted(weekId, h.id); }).length; }
+  function whoHas(key) {
+    return HOSTS.filter(function (h) { var f = state.free[h.id]; return f && f.has(key); }).map(function (h) { return h.id; });
+  }
+  function lockIn(week) {
+    for (var i = 0; i < state.locks.length; i++) if (inWeek(week, state.locks[i].key)) return state.locks[i];
+    return null;
+  }
+  function rebuildFree() {
+    var free = {};
+    Object.keys(state.avail).forEach(function (w) {
+      Object.keys(state.avail[w]).forEach(function (id) {
+        var set = free[id] || (free[id] = new Set());
+        state.avail[w][id].slots.forEach(function (k) { set.add(k); });
+      });
+    });
+    state.free = free;
+  }
+
+  // ---------- Drafts: what the picked name has tapped, per week ----------
+  function fromSaved(weekId) {
+    var a = state.me ? entry(weekId, state.me) : null, s = new Set();
+    if (a) a.slots.forEach(function (x) { s.add(x); });
+    return { slots: s, note: a ? a.note : "", dirty: false };
+  }
+  function refreshDrafts() {
+    WEEKS.forEach(function (w) {
+      var d = state.drafts[w.id];
+      if (!d || !d.dirty) state.drafts[w.id] = fromSaved(w.id);
+    });
+  }
+  function draft(weekId) {
+    weekId = weekId || state.week;
+    if (!state.drafts[weekId]) state.drafts[weekId] = fromSaved(weekId);
+    return state.drafts[weekId];
+  }
+  function showNote(force) {
+    if (force || document.activeElement !== noteEl) noteEl.value = draft().note;
+  }
+
+  // ---------- Rows: which hours of the day the sheets show ----------
+  function hourOf(key) { return at(key).h; }
+  function needsEarly(week) {
+    var found = false;
+    function scan(set) { set.forEach(function (k) { if (!found && inWeek(week, k) && hourOf(k) < DAY_START) found = true; }); }
+    Object.keys(state.free).forEach(function (id) { scan(state.free[id]); });
+    scan(draft(week.id).slots);
+    state.locks.forEach(function (l) { if (inWeek(week, l.key) && hourOf(l.key) < DAY_START) found = true; });
+    return found;
+  }
+  function rowsFor(week) {
+    var rows = [], from = state.early || needsEarly(week) ? 0 : DAY_START;
+    for (var h = from; h < 24; h++) rows.push(h);
+    return rows;
+  }
+  function renderEarlyButtons() {
+    var week = weekById(state.week), forced = needsEarly(week);
+    Array.prototype.forEach.call(document.querySelectorAll("[data-early]"), function (b) {
+      b.disabled = forced;
+      b.textContent = forced ? "Showing all 24 hours because someone picked an early one"
+        : (state.early ? "Hide 12am to 7am" : "Show 12am to 7am");
+    });
+  }
+
+  // ---------- Render: zone, weeks, progress ----------
+  function renderZone() {
+    zoneEl.textContent = "";
+    var now = Date.now();
+    ZONES.forEach(function (z) {
+      var p = tzParts(now, z.tz), o = el("option", null, z.label + "  (" + clock(p.h, p.mi || 0).replace(/(am|pm)$/, " $1") + " now)");
+      o.value = z.tz;
+      if (z.tz === zone) o.selected = true;
+      zoneEl.append(o);
+    });
+    Array.prototype.forEach.call(document.querySelectorAll("[data-legend]"), function (box) {
+      box.textContent = "";
+      var key = el("span", "key");
+      HOSTS.forEach(function (h) { key.append(el("i", "q on", h.ini)); });
+      var names = el("span");
+      HOSTS.forEach(function (h, i) {
+        if (i) names.append(" · ");
+        names.append(el("b", null, h.ini), " " + h.name);
+      });
+      box.append(key, names);
+    });
+  }
+
+  function renderWeeks() {
+    var box = $("weeks");
+    box.textContent = "";
+    WEEKS.forEach(function (w) {
+      var b = el("button");
+      b.type = "button";
+      b.dataset.week = w.id;
+      b.setAttribute("aria-pressed", String(state.week === w.id));
+      b.append(el("span", "wl", w.label), el("span", "wr", w.range));
+      var d = state.drafts[w.id], lock = lockIn(w), n = submittedCount(w.id);
+      if (d && d.dirty) b.append(el("span", "ws unsent", "Not sent yet"));
+      else if (lock) b.append(el("span", "ws", "Locked " + dayBits(at(lock.key).date).wd + " " + shortClockOf(lock.key)));
+      else b.append(el("span", "ws", n + " of " + HOSTS.length + " in"));
+      box.append(b);
+    });
+  }
+
+  function renderProgress() {
+    var bar = $("pBar"), week = weekById(state.week);
+    bar.textContent = "";
+    var done = 0, waiting = [];
+    HOSTS.forEach(function (h) {
+      var cur = submitted(state.week, h.id);
+      var seg = el("div", "pseg" + (cur ? " in" : ""));
+      seg.append(el("div", "track"), el("b", null, h.name));
+      if (cur) {
+        done++;
+        var a = entry(state.week, h.id), n = a.slots.size;
+        seg.append(el("span", null, n === 0 ? "Out" : n + (n === 1 ? " hr" : " hrs")));
+        if (a.tz) seg.append(el("span", "where", zoneShort(a.tz)));
+      } else {
+        waiting.push(h.name);
+        seg.append(el("span", null, "Waiting"));
+      }
+      bar.append(seg);
+    });
+    $("pCount").textContent = done + " of " + HOSTS.length + " submitted";
+    $("pNote").textContent = state.dbState === "connecting" ? "Loading…" : week.range;
+    bar.setAttribute("aria-label", done + " of " + HOSTS.length + " submitted for " + week.range + "." +
+      (waiting.length ? " Waiting on " + list(waiting) + "." : ""));
+  }
+
+  // ---------- Render: sheets ----------
+  // Four corners per hour, one per host in a fixed position. `ids` are the hosts free that hour;
+  // on your own sheet your corner follows what you've tapped and is drawn in yellow.
+  function fillQuads(btn, ids, meId, mePicked) {
+    btn.textContent = "";
+    var count = 0;
+    HOSTS.forEach(function (h) {
+      var mine = h.id === meId;
+      var on = mine ? mePicked : ids.indexOf(h.id) >= 0;
+      if (on) count++;
+      btn.append(el("i", "q" + (on ? " on" : "") + (on && mine ? " me" : ""), on ? h.ini : ""));
+    });
+    btn.classList.toggle("full", count === HOSTS.length);
+  }
+  function paintMine(btn) {
+    var key = +btn.dataset.slot;
+    var others = btn.dataset.others ? btn.dataset.others.split(",") : [];
+    fillQuads(btn, others, state.me, !!state.me && draft().slots.has(key));
+  }
+  function sheetHead(grid, week, asButtons) {
+    grid.append(el("div", "tm head"));
+    week.days.forEach(function (dateStr) {
+      var d = dayBits(dateStr);
+      var gone = isPast(keyAt(addDays(dateStr, 1), 0) - 1);
+      var n = el(asButtons && !gone ? "button" : "div", "dh" + (dateStr === TODAY ? " today" : "") + (gone ? " gone" : ""));
+      if (asButtons && !gone) {
+        n.type = "button";
+        n.dataset.day = dateStr;
+        n.setAttribute("aria-label", "Toggle all of " + d.wd + " " + d.mo + " " + d.dn);
+      }
+      n.append(el("span", "wd", dateStr === TODAY ? "Today" : d.wd), el("span", "dn", String(d.dn)));
+      grid.append(n);
+    });
+  }
+  function timeCell(week, h) {
+    var t = el("div", "tm");
+    t.append(el("span", null, shortClockOf(keyAt(week.days[0], h))));
+    return t;
+  }
+
+  function renderWho() {
+    var who = $("who");
+    who.textContent = "";
+    HOSTS.forEach(function (h) {
+      var b = el("button", null, h.name);
+      b.type = "button";
+      b.dataset.host = h.id;
+      b.setAttribute("aria-pressed", String(state.me === h.id));
+      who.append(b);
+    });
+  }
+
+  function renderMyGrid() {
+    var grid = $("myGrid"), week = weekById(state.week), d = draft();
+    var others = HOSTS.filter(function (x) { return x.id !== state.me; });
+    var othersIn = others.filter(function (x) { return submitted(state.week, x.id); });
+    grid.textContent = "";
+    grid.className = "sheet" + (state.me ? "" : " off");
+    $("step1").classList.toggle("next", !state.me);
+    $("step4").classList.toggle("wait", !state.me && state.view === "mine");
+    $("step5").classList.toggle("wait", !state.me);
+    sheetHead(grid, week, true);
+    rowsFor(week).forEach(function (h) {
+      grid.append(timeCell(week, h));
+      week.days.forEach(function (dateStr) {
+        var key = keyAt(dateStr, h);
+        var free = whoHas(key).filter(function (id) { return id !== state.me; });
+        var btn = el("button", "hr");
+        btn.type = "button";
+        btn.dataset.slot = String(key);
+        btn.dataset.date = dateStr;
+        btn.setAttribute("aria-pressed", String(d.slots.has(key)));
+        btn.setAttribute("aria-label", dayOf(key) + ", " + rangeOf(key, key + 1) +
+          (free.length ? ". Already free: " + list(free.map(hostName)) : ""));
+        btn.dataset.others = free.join(",");
+        paintMine(btn);
+        if (isPast(key)) btn.disabled = true;
+        grid.append(btn);
+      });
+    });
+    $("gridHint").textContent = !state.me
+      ? "Do step 1 first: pick your name."
+      : "Showing " + week.range + " in " + zoneShort(zone) + " time. Each box is one hour. Tap a date to select or clear the whole day.";
+    $("othersHint").textContent = othersIn.length
+      ? "Blue corners are hours the others already picked. Your corner turns yellow when you pick one."
+      : "Nobody else has submitted for this week yet. Your corner turns yellow when you pick an hour.";
+    renderEarlyButtons();
+  }
+
+  function renderMyBar() {
+    var t = $("myBarText"), btn = $("submitBtn");
+    t.textContent = "";
+    var d = draft(), n = d.slots.size, week = weekById(state.week);
+    var mine = state.me ? entry(state.week, state.me) : null;
+    var done = !!(mine && mine.updatedAt);
+    var head, sub;
+    if (!state.me) {
+      head = "Start at step 1"; sub = "Pick your name, then your hours.";
+    } else if (state.saving) {
+      head = "Saving…"; sub = "";
+    } else if (d.dirty) {
+      head = hoursText(n) + " picked";
+      sub = n === 0 ? "Submit to say you're out for " + week.range + "." : "Not sent yet for " + week.range + ".";
+    } else if (done) {
+      head = "Submitted for " + week.range;
+      sub = hoursText(n) + " · " + whenText(mine.updatedAt);
+    } else {
+      head = "Nothing sent for " + week.range;
+      sub = "Pick hours, or submit with none if you're out.";
+    }
+    t.append(el("strong", null, head));
+    if (sub) t.append(sub);
+    btn.disabled = !state.me || state.saving || !writable() || (!d.dirty && done);
+    btn.textContent = state.saving ? "Saving…" : (!d.dirty && done ? "Submitted" : (done ? "Update times" : "Submit times"));
+  }
+
+  // ---------- Render: group ----------
+  // Back-to-back hours with the same people free, as one window.
+  function windows(week) {
+    var runs = [], cur = null;
+    for (var k = week.from; k < week.to; k++) {
+      var ids = isPast(k) ? [] : whoHas(k);
+      var sig = ids.join(",");
+      if (cur && cur.sig === sig && cur.end === k && at(k).date === cur.date) { cur.end = k + 1; continue; }
+      cur = ids.length ? { start: k, end: k + 1, ids: ids, sig: sig, date: at(k).date } : null;
+      if (cur) runs.push(cur);
+    }
+    return runs;
+  }
+
+  function renderBest() {
+    var best = $("best"), week = weekById(state.week);
+    best.textContent = "";
+    var runs = windows(week);
+    var max = runs.reduce(function (m, r) { return Math.max(m, r.ids.length); }, 0);
+    var subs = submittedCount(state.week);
+    if (max === 0) {
+      best.append(el("div", "empty", state.dbState === "connecting"
+        ? "Loading everyone's times…"
+        : "No times in yet for " + week.range + ". Windows show up here as people submit."));
+      $("bestLabel").textContent = "Best windows";
+      return;
+    }
+    if (max < 2) {
+      $("bestLabel").textContent = "Best windows";
+      best.append(el("div", "empty", "No overlap yet. " + subs + " of " + HOSTS.length + " have submitted for " + week.range + "."));
+      return;
+    }
+    var top = runs.filter(function (r) { return r.ids.length === max; });
+    $("bestLabel").textContent = max === HOSTS.length ? "Everyone's free" : "Closest so far: " + max + " of " + HOSTS.length;
+    top.slice(0, 6).forEach(function (r) {
+      var btn = el("button", max === HOSTS.length ? "full" : null);
+      btn.type = "button";
+      btn.dataset.pick = String(r.start);
+      var left = el("div");
+      left.append(el("div", "a", dayOf(r.start) + " · " + rangeOf(r.start, r.end)));
+      var missing = HOSTS.filter(function (h) { return r.ids.indexOf(h.id) < 0; }).map(function (h) { return h.name; });
+      var sub = hoursText(r.end - r.start) + " · " + zoneShort(zone) + " time";
+      if (missing.length) sub += " · without " + list(missing);
+      left.append(el("div", "b", sub));
+      btn.append(left, el("div", "c", r.ids.length + "/" + HOSTS.length));
+      best.append(btn);
+    });
+    if (top.length > 6) best.append(el("p", "hint", (top.length - 6) + " more at this count in the grid below."));
+  }
+
+  function renderGroupGrid() {
+    var grid = $("groupGrid"), week = weekById(state.week), lock = lockIn(week);
+    grid.textContent = "";
+    sheetHead(grid, week, false);
+    rowsFor(week).forEach(function (h) {
+      grid.append(timeCell(week, h));
+      week.days.forEach(function (dateStr) {
+        var key = keyAt(dateStr, h), ids = whoHas(key);
+        var cls = "cell";
+        if (isPast(key)) cls += " past";
+        if (state.selected === key) cls += " sel";
+        if (lock && lock.key === key) cls += " lock";
+        var btn = el("button", cls);
+        btn.type = "button";
+        btn.dataset.pick = String(key);
+        btn.setAttribute("aria-label", dayOf(key) + ", " + rangeOf(key, key + 1) + ": " + ids.length + " of " + HOSTS.length + " free");
+        fillQuads(btn, ids, null, false);
+        grid.append(btn);
+      });
+    });
+    renderEarlyButtons();
+  }
+
+  function renderNotes() {
+    var box = $("notes");
+    box.textContent = "";
+    var any = false;
+    HOSTS.forEach(function (h) {
+      var a = entry(state.week, h.id);
+      if (a && a.updatedAt && a.note) {
+        any = true;
+        var n = el("div");
+        n.append(el("b", null, h.name + (a.tz ? " · " + zoneShort(a.tz) : "")), a.note);
+        box.append(n);
+      }
+    });
+    $("notesBlock").hidden = !any;
+  }
+
+  function renderGroupBar() {
+    var bar = $("groupBar"), t = $("groupBarText"), week = weekById(state.week);
+    if (state.view !== "group" || state.selected == null) { bar.hidden = true; return; }
+    bar.hidden = false;
+    var key = state.selected, ids = whoHas(key);
+    var inNames = ids.map(hostName);
+    var waiting = HOSTS.filter(function (h) { return ids.indexOf(h.id) < 0 && !submitted(state.week, h.id); }).map(function (h) { return h.name; });
+    var outNames = HOSTS.filter(function (h) { return ids.indexOf(h.id) < 0 && waiting.indexOf(h.name) < 0; }).map(function (h) { return h.name; });
+    t.textContent = "";
+    t.append(el("strong", null, dayOf(key) + " · " + rangeOf(key, key + 1)));
+    var bits = [];
+    bits.push(inNames.length ? "In: " + list(inNames) : "Nobody in yet");
+    if (outNames.length) bits.push("Out: " + list(outNames));
+    if (waiting.length) bits.push("Waiting: " + list(waiting));
+    t.append(bits.join(" · "));
+    var lock = lockIn(week), isLocked = !!lock && lock.key === key;
+    $("lockBtn").textContent = isLocked ? "Locked" : "Start at " + clockOf(key);
+    $("lockBtn").disabled = isLocked || !writable() || state.saving;
+  }
+
+  function renderLocked() {
+    var box = $("locked"), lock = lockIn(weekById(state.week));
+    if (!lock) { box.hidden = true; return; }
+    box.hidden = false;
+    $("lockedWhen").textContent = dayOf(lock.key) + " · " + clockOf(lock.key);
+    $("lockedSub").textContent = "Start time, " + zoneShort(zone) + " time";
+    $("unlockBtn").hidden = !writable();
+  }
+
+  function renderNotice() {
+    var n = $("notice"), msg = "";
+    if (state.setupError) msg = state.setupError;
+    else if (state.preview) msg = "Not connected yet. Hours you submit stay on this device until the Supabase URL and key are added.";
+    else if (state.dbState === "none") msg = "You're seeing a blank copy. Sign in to Claude and open this page from the link you were sent to see and submit times.";
+    else if (state.dbState === "revoked") msg = "Your access to this page changed. Reopen it from the link you were sent.";
+    else if (state.dbState === "slow") msg = "Can't reach the saved times yet. Still trying; anything shown may be out of date.";
+    else if (state.canWrite === false) msg = "You can see everyone's times but can't submit. Ask whoever sent you this page for edit access.";
+    n.hidden = !msg;
+    n.textContent = msg;
+  }
+
+  function renderView() {
+    var mine = state.view === "mine";
+    $("mine").hidden = !mine;
+    $("group").hidden = mine;
+    $("tabMine").setAttribute("aria-selected", String(mine));
+    $("tabGroup").setAttribute("aria-selected", String(!mine));
+    $("gridLabel").textContent = mine ? "Pick your hours" : "Everyone's hours";
+    $("step5").hidden = !mine;
+    $("myBar").hidden = !mine;
+    $("step4").classList.toggle("wait", !state.me && mine);
+    renderGroupBar();
+  }
+
+  function renderShared() {
+    renderNotice(); renderWeeks(); renderProgress(); renderLocked(); renderBest(); renderGroupGrid(); renderNotes(); renderGroupBar(); renderMyBar();
+  }
+  function renderAll() {
+    renderView(); renderWho(); renderMyGrid(); renderShared();
+  }
+
+  // ---------- Events ----------
+  zoneEl.addEventListener("change", function () {
+    if (!zoneWorks(zoneEl.value)) return;
+    zone = zoneEl.value;
+    try { localStorage.setItem(LS_ZONE, zone); } catch (e) {}
+    buildWeeks();
+    if (!weekById(state.week)) state.week = WEEKS[0].id;
+    state.selected = null;
+    refreshDrafts();
+    showNote(true);
+    renderAll();
+  });
+
+  $("weeks").addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-week]");
+    if (!b || state.saving || b.dataset.week === state.week) return;
+    state.week = b.dataset.week;
+    state.selected = null;
+    showNote(true);
+    renderMyGrid(); renderShared();
+  });
+
+  $("who").addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-host]");
+    if (!b || state.saving) return;
+    state.me = b.dataset.host;
+    state.drafts = {};
+    refreshDrafts();
+    showNote(true);
+    renderWho(); renderMyGrid(); renderWeeks(); renderMyBar();
+  });
+
+  $("myGrid").addEventListener("click", function (e) {
+    if (!state.me || state.saving) return;
+    var d = draft();
+    var s = e.target.closest("button[data-slot]");
+    if (s && !s.disabled) {
+      var key = +s.dataset.slot;
+      if (d.slots.has(key)) d.slots.delete(key); else d.slots.add(key);
+      s.setAttribute("aria-pressed", String(d.slots.has(key)));
+      paintMine(s);
+      d.dirty = true;
+      renderWeeks(); renderMyBar();
+      return;
+    }
+    var dayBtn = e.target.closest("button[data-day]");
+    if (dayBtn) {
+      var cells = Array.prototype.filter.call(
+        $("myGrid").querySelectorAll('button[data-date="' + dayBtn.dataset.day + '"]'),
+        function (b) { return !b.disabled; });
+      if (!cells.length) return;
+      var allOn = cells.every(function (b) { return d.slots.has(+b.dataset.slot); });
+      cells.forEach(function (b) {
+        var k = +b.dataset.slot;
+        if (allOn) d.slots.delete(k); else d.slots.add(k);
+        b.setAttribute("aria-pressed", String(!allOn));
+        paintMine(b);
+      });
+      d.dirty = true;
+      renderWeeks(); renderMyBar();
+    }
+  });
+
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest("[data-early]");
+    if (!b || b.disabled) return;
+    state.early = !state.early;
+    renderMyGrid(); renderGroupGrid();
+  });
+
+  noteEl.addEventListener("input", function () {
+    if (!state.me) return;
+    var d = draft();
+    d.note = noteEl.value;
+    if (!d.dirty) { d.dirty = true; renderWeeks(); }
+    renderMyBar();
+  });
+
+  function writeFailed(err) {
+    var code = err && err.code;
+    if (code === "setup") { renderNotice(); return true; }
+    if (code === "invalid_argument" || code === "not_granted") state.canWrite = false;
+    else if (code === "revoked") state.dbState = "revoked";
+    else if (code === "quota_exceeded") { $("notice").hidden = false; $("notice").textContent = "This page's storage is full, so that didn't save."; return true; }
+    else { $("notice").hidden = false; $("notice").textContent = "That didn't save. Check your connection and try again."; return true; }
+    return false;
+  }
+  function withRetry(fn) {
+    return fn().catch(function (err) {
+      if (err && err.code === "unavailable") {
+        return new Promise(function (res) { setTimeout(res, 600 + Math.random() * 600); }).then(fn);
+      }
+      throw err;
+    });
+  }
+
+  $("submitBtn").addEventListener("click", function () {
+    if (!db || !state.me || state.saving) return;
+    var me = state.me, weekId = state.week, d = draft(weekId);
+    var slots = Array.from(d.slots).filter(function (k) { return typeof k === "number" && isFinite(k); }).sort(function (a, b) { return a - b; });
+    var body = { week: weekId, host: me, slots: slots, note: (d.note || "").trim().slice(0, 500), tz: zone, updatedAt: Date.now() };
+    state.saving = true;
+    renderMyBar();
+    withRetry(function () { return db.doc("avail/" + weekId + "_" + me).set(body); }).then(function () {
+      state.saving = false;
+      if (!state.avail[weekId]) state.avail[weekId] = {};
+      state.avail[weekId][me] = { slots: new Set(slots), note: body.note, tz: zone, updatedAt: body.updatedAt };
+      rebuildFree();
+      if (state.me === me) state.drafts[weekId] = fromSaved(weekId);
+      renderShared();
+    }).catch(function (err) {
+      state.saving = false;
+      if (writeFailed(err)) renderMyBar(); else renderShared();
+    });
+  });
+
+  $("groupGrid").addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-pick]");
+    if (!b) return;
+    var key = +b.dataset.pick;
+    state.selected = state.selected === key ? null : key;
+    renderGroupGrid(); renderGroupBar();
+  });
+  $("best").addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-pick]");
+    if (!b) return;
+    state.selected = +b.dataset.pick;
+    renderGroupGrid(); renderGroupBar();
+  });
+
+  $("lockBtn").addEventListener("click", function () {
+    if (!db || state.selected == null || state.saving) return;
+    var key = state.selected, weekId = state.week, old = lockIn(weekById(weekId));
+    state.saving = true;
+    renderGroupBar();
+    withRetry(function () { return db.doc("locks/" + weekId).set({ slot: key, at: Date.now() }); }).then(function () {
+      // A lock made from another zone's calendar can sit under a neighbouring week's name.
+      return old && old.id !== weekId ? db.doc("locks/" + old.id).delete() : null;
+    }).then(function () {
+      state.saving = false;
+      state.locks = state.locks.filter(function (l) { return l.id !== weekId && !(old && l.id === old.id); });
+      state.locks.push({ id: weekId, key: key });
+      renderShared();
+    }).catch(function (err) {
+      state.saving = false;
+      if (writeFailed(err)) renderGroupBar(); else renderShared();
+    });
+  });
+
+  $("unlockBtn").addEventListener("click", function () {
+    var lock = lockIn(weekById(state.week));
+    if (!db || state.saving || !lock) return;
+    state.saving = true;
+    withRetry(function () { return db.doc("locks/" + lock.id).delete(); }).then(function () {
+      state.saving = false;
+      state.locks = state.locks.filter(function (l) { return l.id !== lock.id; });
+      renderShared();
+    }).catch(function (err) {
+      state.saving = false;
+      if (!writeFailed(err)) renderShared();
+    });
+  });
+
+  function setView(v, fromHash) {
+    state.view = v;
+    renderView();
+    if (!fromHash) { try { location.hash = v === "group" ? "group" : "my-times"; } catch (e) {} }
+  }
+  $("tabMine").addEventListener("click", function () { setView("mine"); });
+  $("tabGroup").addEventListener("click", function () { setView("group"); });
+  function readHash() { setView(location.hash === "#group" ? "group" : "mine", true); }
+  window.addEventListener("hashchange", readHash);
+
+  // ---------- First paint ----------
+  renderZone();
+  readHash();
+  renderAll();
+
+  // ---------- Reading saved hours ----------
+  // Current format: a whole UTC hour as a number. Earlier format: "YYYY-MM-DD|H" in Eastern.
+  function toKey(v) {
+    if (typeof v === "number" && isFinite(v)) return Math.round(v);
+    if (typeof v === "string") {
+      var m = /^(\d{4}-\d{2}-\d{2})\|(\d{1,2})$/.exec(v);
+      if (m) return Math.round(zonedToUtc(m[1], +m[2], LEGACY_TZ) / HOUR);
+    }
+    return null;
+  }
+
+  // ---------- Storage: Supabase (shared by everyone with the link) ----------
+  function snapDoc(id, v) {
+    return { id: id, exists: !!v, data: function () { return v || undefined; }, metadata: { fromCache: false, hasPendingWrites: false } };
+  }
+  function supaDb() {
+    var base = SUPABASE_URL.replace(/\/+$/, "") + "/rest/v1/";
+    var data = { avail: {}, locks: {} }, sig = { avail: null, locks: null }, subs = { avail: [], locks: [] };
+    var gen = 0;
+    function since() { return new Date(Date.now() - 21 * 24 * HOUR).toISOString().slice(0, 10); }
+    function call(method, path, body, prefer) {
+      var headers = { apikey: SUPABASE_KEY, Authorization: "Bearer " + SUPABASE_KEY };
+      if (body) headers["Content-Type"] = "application/json";
+      if (prefer) headers.Prefer = prefer;
+      return fetch(base + path, { method: method, headers: headers, body: body ? JSON.stringify(body) : undefined, cache: "no-store" })
+        .then(function (r) {
+          if (r.ok) {
+            if (state.setupError) { state.setupError = ""; renderNotice(); }
+            return method === "GET" ? r.json() : null;
+          }
+          if (r.status >= 500) throw { code: "unavailable", message: "HTTP " + r.status };
+          state.setupError = "The database turned that down (error " + r.status + "). Check the Supabase URL and publishable key in this file, and that the setup SQL was run.";
+          renderNotice();
+          throw { code: "setup", message: "HTTP " + r.status };
+        }, function (e) { throw { code: "unavailable", message: String(e) }; });
+    }
+    function toDocs(name, rows) {
+      var out = {};
+      rows.forEach(function (r) {
+        if (name === "avail") {
+          out[r.week + "_" + r.host] = { week: r.week, host: r.host, slots: r.slots || [], note: r.note || "", tz: r.tz || "", updatedAt: Date.parse(r.updated_at) || 0 };
+        } else {
+          out[r.week] = { slot: r.slot };
+        }
+      });
+      return out;
+    }
+    function emit(name) {
+      var box = data[name];
+      var snap = { docs: Object.keys(box).map(function (k) { return snapDoc(k, box[k]); }), metadata: { fromCache: false } };
+      subs[name].forEach(function (f) { f(snap); });
+    }
+    function load(name) {
+      var mine = gen;
+      var path = name === "avail"
+        ? "pb_avail?select=week,host,slots,note,tz,updated_at&week=gte." + since()
+        : "pb_locks?select=week,slot&week=gte." + since();
+      return call("GET", path).then(function (rows) {
+        if (mine !== gen) return;            // something was saved while this was in flight
+        var s = JSON.stringify(rows);
+        if (s === sig[name]) return;         // nothing changed
+        sig[name] = s;
+        data[name] = toDocs(name, rows);
+        emit(name);
+      }).catch(function () {});
+    }
+    function refresh() { load("avail"); load("locks"); }
+    setInterval(function () { if (!document.hidden) refresh(); }, 20000);
+    document.addEventListener("visibilitychange", function () { if (!document.hidden) refresh(); });
+    var started = false;
+    return {
+      collection: function (name) {
+        return {
+          onSnapshot: function (next) {
+            subs[name].push(next);
+            if (!started) { started = true; setTimeout(refresh, 0); }
+            return function () {};
+          }
+        };
+      },
+      doc: function (path) {
+        var p = path.split("/"), name = p[0], id = p[1];
+        return {
+          set: function (v) {
+            gen++;
+            var req = name === "avail"
+              ? call("POST", "pb_avail?on_conflict=week,host",
+                  { week: v.week, host: v.host, slots: v.slots, note: v.note, tz: v.tz, updated_at: new Date(v.updatedAt).toISOString() },
+                  "resolution=merge-duplicates,return=minimal")
+              : call("POST", "pb_locks?on_conflict=week",
+                  { week: id, slot: v.slot, updated_at: new Date().toISOString() },
+                  "resolution=merge-duplicates,return=minimal");
+            return req.then(function () {
+              data[name][id] = name === "avail" ? v : { slot: v.slot };
+              sig[name] = null;
+              emit(name);
+            });
+          },
+          delete: function () {
+            gen++;
+            var where = name === "avail" ? "pb_avail?week=eq." + id.split("_")[0] + "&host=eq." + id.split("_")[1] : "pb_locks?week=eq." + id;
+            return call("DELETE", where).then(function () {
+              delete data[name][id];
+              sig[name] = null;
+              emit(name);
+            });
+          }
+        };
+      }
+    };
+  }
+
+  // ---------- Storage: this device only, used until Supabase is connected ----------
+  function localDb() {
+    var KEY = "tpb-preview-weeks";
+    var mem = { avail: {}, locks: {} };
+    try {
+      var raw = JSON.parse(localStorage.getItem(KEY) || "null");
+      if (raw && raw.avail && raw.locks) mem = { avail: raw.avail, locks: raw.locks };
+    } catch (e) {}
+    var subs = [];
+    function save() {
+      try { localStorage.setItem(KEY, JSON.stringify(mem)); } catch (e) {}
+      subs.forEach(function (f) { f(); });
+    }
+    return {
+      collection: function (name) {
+        return {
+          onSnapshot: function (next) {
+            var f = function () {
+              var box = mem[name] || {};
+              next({ docs: Object.keys(box).map(function (k) { return snapDoc(k, box[k]); }), metadata: { fromCache: false } });
+            };
+            subs.push(f);
+            setTimeout(f, 0);
+            return function () {};
+          }
+        };
+      },
+      doc: function (path) {
+        var parts = path.split("/"), box = mem[parts[0]] || (mem[parts[0]] = {});
+        return {
+          set: function (v) { box[parts[1]] = v; save(); return Promise.resolve(); },
+          delete: function () { delete box[parts[1]]; save(); return Promise.resolve(); }
+        };
+      }
+    };
+  }
+
+  // ---------- Shared data ----------
+  function connect() {
+    var c = window.claude;
+    if (!c || typeof c.use !== "function") {
+      var ready = /^https:\/\/\S+$/.test(SUPABASE_URL) && SUPABASE_KEY.length > 20 && SUPABASE_KEY.indexOf("PASTE_") !== 0;
+      state.canWrite = true;
+      state.preview = !ready;
+      var store = ready ? supaDb() : localDb();
+      c = { use: function (n) { return Promise.resolve(n === "db" ? store : null); } };
+    }
+
+    c.use("user").then(function (user) {
+      if (!user) return null;
+      return user.can("data.write");
+    }).then(function (ok) {
+      if (ok === true || ok === false) { state.canWrite = ok; renderShared(); }
+    }).catch(function () {});
+
+    c.use("db").then(function (handle) {
+      if (!handle) { state.dbState = "none"; renderShared(); return; }
+      db = handle;
+      var slowTimer = setTimeout(function () {
+        if (state.dbState === "connecting") { state.dbState = "slow"; renderShared(); }
+      }, 10000);
+      function settled() {
+        clearTimeout(slowTimer);
+        if (state.dbState === "connecting" || state.dbState === "slow") state.dbState = "ready";
+      }
+      function dead(err) {
+        clearTimeout(slowTimer);
+        state.dbState = err && err.code === "revoked" ? "revoked" : "slow";
+        renderShared();
+      }
+
+      // One document per host per week: avail/<week's Monday>_<host>
+      db.collection("avail").onSnapshot(function (snap) {
+        var next = {};
+        snap.docs.forEach(function (d) {
+          var m = /^(\d{4}-\d{2}-\d{2})_([a-z]+)$/.exec(d.id);
+          if (!m || !HOSTS.some(function (h) { return h.id === m[2]; })) return;
+          var v = d.data() || {};
+          var slots = new Set();
+          if (Array.isArray(v.slots)) v.slots.forEach(function (s) { var k = toKey(s); if (k != null) slots.add(k); });
+          if (!next[m[1]]) next[m[1]] = {};
+          next[m[1]][m[2]] = {
+            slots: slots,
+            note: typeof v.note === "string" ? v.note.slice(0, 500) : "",
+            tz: typeof v.tz === "string" && zoneWorks(v.tz) ? v.tz : "",
+            updatedAt: typeof v.updatedAt === "number" ? v.updatedAt : 0
+          };
+        });
+        state.avail = next;
+        rebuildFree();
+        if (!snap.metadata.fromCache) settled();
+        if (!state.saving) { refreshDrafts(); showNote(false); renderMyGrid(); }
+        renderShared();
+      }, dead);
+
+      // One locked start time per week: locks/<week's Monday>
+      db.collection("locks").onSnapshot(function (snap) {
+        var next = [];
+        snap.docs.forEach(function (d) {
+          var k = toKey((d.data() || {}).slot);
+          if (k != null && /^\d{4}-\d{2}-\d{2}$/.test(d.id)) next.push({ id: d.id, key: k });
+        });
+        state.locks = next;
+        renderMyGrid();
+        renderShared();
+      }, dead);
+
+      renderShared();
+    }).catch(function () { state.dbState = "none"; renderShared(); });
+  }
+  connect();
+})();
+</script>
+</body>
+</html>
