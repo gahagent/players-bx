@@ -133,6 +133,7 @@ h3 { margin: 0; font-size: 19px; font-weight: 600; }
   display: flex; align-items: center; justify-content: center; gap: 6px;
   min-width: 0;
 }
+.who button .pdot { margin-right: 0; }
 .who button svg { width: 18px; height: 18px; display: none; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
 .who button[aria-pressed="true"] { background: linear-gradient(180deg, #B9D6FF, #86B7FF); border-color: #D6E6FF; color: #0A1A3A; font-weight: 700; }
 .who button[aria-pressed="true"] svg { display: block; }
@@ -167,7 +168,7 @@ select option { background: #0F182B; color: #fff; }
 .bestband .pick { flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: space-between; }
 .bestband .pick .primary { width: auto; font-size: 18px; padding: 12px 20px; }
 
-/* Main area. Phone: quick add, calendar, then the rest. Wide: calendar left, the rest right. */
+/* Main area: calendar, then your selection. Side by side on a wide screen. */
 .main { display: grid; grid-template-columns: 1fr; gap: 18px; align-items: start; }
 .side { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
 .gridcard { padding: 18px 10px; }
@@ -216,39 +217,24 @@ div.dh { cursor: default; }
   grid-template-rows: 1fr 1fr;
 }
 .q { display: flex; align-items: center; justify-content: center; font-style: normal; font-size: clamp(11px, 3.1vw, 13px); font-weight: 700; line-height: 1; min-width: 0; color: #fff; }
-.q.on { background: #2B5FC0; }
-.q.me { background: linear-gradient(180deg, #25AE56, #17863C); }
-.hr[aria-pressed="true"] { background: #0E2A22; border-color: var(--green-line); box-shadow: 0 0 10px rgba(70, 217, 122, 0.30); }
-.hr.full .q.on { background: linear-gradient(180deg, #25AE56, #17863C); }
-.hr.full { border-color: #B6FFCB; box-shadow: 0 0 12px rgba(70, 217, 122, 0.55); }
-.hr.sel { border-color: #fff; box-shadow: 0 0 0 2px #fff; }
+.legend .names { display: flex; flex-wrap: wrap; gap: 4px 14px; }
+.legend .names span { display: inline-flex; align-items: center; white-space: nowrap; }
+/* Each person keeps one colour everywhere: her corner, the key, and the lists */
+.h-des { --pc: #5CB8F0; }
+.h-jenny { --pc: #F2A31B; }
+.h-jess { --pc: #F08BC0; }
+.h-madi { --pc: #3DD6A0; }
+.q.on { background: var(--pc, #2B5FC0); color: #08111F; }
+.hr[aria-pressed="true"] { border: 2px solid #fff; }
+.hr.full { box-shadow: 0 0 12px rgba(255, 255, 255, 0.55); border-color: #fff; }
+.hr.sel { outline: 2.5px dashed #fff; outline-offset: 1px; }
 .hr.lock { border-color: #FFD95A; box-shadow: 0 0 0 2.5px #FFD95A; }
+.pdot { display: inline-block; width: 12px; height: 12px; border-radius: 3px; background: var(--pc); margin-right: 8px; flex: none; }
 .hr:disabled { opacity: 0.35; cursor: default; border-style: dashed; }
 .legend { display: flex; align-items: center; gap: 12px; font-size: 16px; color: var(--muted); }
 .legend { flex-wrap: wrap; }
 .legend .key { flex: none; width: 58px; height: 44px; border: 1.5px solid #26344F; border-radius: 7px; overflow: hidden; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; }
 .legend b { color: var(--ink); }
-
-/* Quick add: fill the same hours on several days at once */
-.quick.off > :not(.qhead) { opacity: 0.5; pointer-events: none; }
-.quick.off .qsets { opacity: 0.5; pointer-events: none; }
-.qhead { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
-.qsets { display: flex; gap: 6px; }
-.qsets button { background: transparent; border: 1.5px solid #5B6E96; border-radius: 999px; padding: 4px 12px; font-size: 15px; font-weight: 600; color: var(--muted); }
-.qdays { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
-.qdays button { background: transparent; border: 1.5px solid #8794B0; border-radius: 999px; padding: 9px 0; font-size: 16px; font-weight: 600; min-width: 0; }
-.qdays button[aria-pressed="true"] { background: linear-gradient(180deg, #C2DBFF, #8FBCFF); border-color: #D6E6FF; color: #0A1A3A; font-weight: 700; }
-.qdays button:disabled { opacity: 0.3; cursor: default; }
-.qtimes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.qtimes label { display: flex; flex-direction: column; gap: 4px; font-size: 15px; font-weight: 600; color: var(--muted); }
-.qacts { display: grid; grid-template-columns: 1fr; gap: 6px; justify-items: center; }
-.qacts .go { width: 100%; }
-.qacts .go { background: linear-gradient(180deg, #F4F8FF, #D5E5FF); color: #0A1A3A; border: 0; border-radius: 999px; padding: 12px 16px; font-size: 17px; font-weight: 700; }
-.qacts .go:disabled { background: #223150; color: #9AA8C6; cursor: default; }
-.qacts .undo { background: transparent; border: 0; padding: 8px 4px; font-size: 16px; font-weight: 600; color: var(--blue-soft); text-decoration: underline; text-underline-offset: 3px; }
-.qacts .undo:disabled { color: #6E7C9A; text-decoration: none; cursor: default; }
-.qmsg { margin: 0; font-size: 15px; color: #9FE8B6; }
-.qmsg:empty { display: none; }
 
 .linkbtn { align-self: flex-start; background: transparent; border: 0; padding: 8px 0; font-size: 16px; font-weight: 600; color: var(--blue-soft); text-decoration: underline; text-underline-offset: 3px; text-align: left; }
 .linkbtn:disabled { color: var(--muted); text-decoration: none; cursor: default; }
@@ -343,8 +329,6 @@ textarea::placeholder { color: #8E9BB8; }
   .gridcard { margin: 0 -18px; border-left: 0; border-right: 0; border-radius: 0; padding-left: 6px; padding-right: 6px; }
   .sheet { gap: 3px; }
   .tm { font-size: 13px; padding-right: 5px; }
-  .qdays { gap: 4px; }
-  .qdays button { font-size: 14px; padding: 9px 0; }
   .dh b { font-size: 13px; }
   .dh span { font-size: 15px; font-weight: 700; color: #fff; }
   .hr { height: 46px; }
@@ -358,11 +342,8 @@ textarea::placeholder { color: #8E9BB8; }
   .wrap { padding: 0 24px 32px; }
   .hero { margin: 0 -24px; padding: 20px 24px 22px; }
   .chair { display: block; }
-  .row3 { grid-template-columns: 1.25fr 1.05fr 1.05fr; }
-  .main { grid-template-columns: minmax(0, 1fr) 380px; grid-template-rows: auto 1fr; }
-  .main > .gridcard { grid-column: 1; grid-row: 1 / span 2; }
-  .main > .quick { grid-column: 2; grid-row: 1; }
-  .main > .side { grid-column: 2; grid-row: 2; }
+  .row3 { grid-template-columns: 1.1fr 1.3fr 0.9fr; }
+  .main { grid-template-columns: minmax(0, 1fr) 380px; }
   .gridcard { padding: 20px 14px; }
   .hr { height: 40px; }
   .tm { font-size: 17px; padding-right: 14px; }
@@ -439,6 +420,7 @@ textarea::placeholder { color: #8E9BB8; }
     <section class="card">
       <h2 id="zoneLabel"><svg class="ic"><use href="#i-globe"/></svg>Your Time Zone</h2>
       <select id="zone" aria-labelledby="zoneLabel"></select>
+      <p class="hint" id="zoneNow"></p>
     </section>
     <section class="card">
       <h2 id="weekLabel"><svg class="ic"><use href="#i-cal"/></svg>Which Week?</h2>
@@ -451,50 +433,7 @@ textarea::placeholder { color: #8E9BB8; }
     </section>
   </div>
 
-  <div class="locked" id="locked" hidden>
-    <div>
-      <div class="k">Filming locked in</div>
-      <div class="v" id="lockedWhen"></div>
-      <div class="s" id="lockedSub"></div>
-    </div>
-    <button type="button" id="unlockBtn">Clear</button>
-  </div>
-
-  <section class="card bestband">
-    <div class="bhead">
-      <h2><svg class="ic"><use href="#i-clock"/></svg><span id="bestLabel">Best Windows</span></h2>
-      <p class="hint">Where the most of you overlap. Tap one to see who's in and lock the filming time.</p>
-    </div>
-    <div class="best" id="best"></div>
-    <div class="pick" id="pickBox" hidden>
-      <p id="pickText"></p>
-      <button type="button" class="primary" id="lockBtn2"><span class="lbl">Lock it in</span></button>
-    </div>
-  </section>
-
   <div class="main">
-    <section class="card quick" id="quick">
-      <div class="qhead">
-        <h2 id="quickLabel"><svg class="ic"><use href="#i-clock"/></svg>Quick Add</h2>
-        <div class="qsets" role="group" aria-label="Day shortcuts">
-          <button type="button" data-set="weekdays">Weekdays</button>
-          <button type="button" data-set="weekend">Weekend</button>
-          <button type="button" data-set="all">All 7</button>
-        </div>
-      </div>
-      <p class="hint">Add the same hours to several days at once.</p>
-      <div class="qdays" id="qDays" role="group" aria-labelledby="quickLabel"></div>
-      <div class="qtimes">
-        <label for="qFrom">From<select id="qFrom"></select></label>
-        <label for="qUntil">Until<select id="qUntil"></select></label>
-      </div>
-      <div class="qacts">
-        <button type="button" class="go" id="qAdd">Add to 5 days</button>
-        <button type="button" class="undo" id="qRemove">Remove these hours</button>
-      </div>
-      <p class="qmsg" id="qMsg" aria-live="polite"></p>
-    </section>
-
     <section class="card gridcard">
       <div class="gridhead">
         <h2 id="gridLabel"><svg class="ic"><use href="#i-cal"/></svg><span id="gridTitle">Pick Your Hours</span></h2>
@@ -567,18 +506,24 @@ textarea::placeholder { color: #8E9BB8; }
     { tz: "America/Chicago", label: "Central · Chicago, Texas", short: "Central" },
     { tz: "America/Denver", label: "Mountain · Denver", short: "Mountain" },
     { tz: "America/Phoenix", label: "Arizona · Phoenix", short: "Arizona" },
-    { tz: "America/Los_Angeles", label: "Pacific · Los Angeles", short: "Pacific" },
+    { tz: "America/Los_Angeles", label: "Pacific · Los Angeles, Indian Wells", short: "Pacific" },
     { tz: "Pacific/Honolulu", label: "Hawaii", short: "Hawaii" },
-    { tz: "America/Mexico_City", label: "Mexico City", short: "Mexico City" },
+    { tz: "America/Toronto", label: "Toronto · Montreal", short: "Toronto" },
+    { tz: "America/Mexico_City", label: "Mexico City · Guadalajara · Mérida", short: "Mexico City" },
+    { tz: "America/Monterrey", label: "Monterrey", short: "Monterrey" },
     { tz: "America/Sao_Paulo", label: "São Paulo", short: "São Paulo" },
     { tz: "Europe/London", label: "London", short: "London" },
     { tz: "Europe/Paris", label: "Paris · Madrid · Rome · Berlin", short: "Europe (CET)" },
     { tz: "Europe/Athens", label: "Athens", short: "Athens" },
     { tz: "Asia/Dubai", label: "Dubai · Abu Dhabi", short: "Dubai" },
-    { tz: "Asia/Riyadh", label: "Doha · Riyadh", short: "Doha/Riyadh" },
+    { tz: "Asia/Qatar", label: "Doha", short: "Doha" },
+    { tz: "Asia/Riyadh", label: "Riyadh", short: "Riyadh" },
     { tz: "Asia/Kolkata", label: "India", short: "India" },
-    { tz: "Asia/Singapore", label: "Singapore · Hong Kong · Beijing", short: "Singapore" },
-    { tz: "Asia/Tokyo", label: "Tokyo · Seoul", short: "Tokyo/Seoul" },
+    { tz: "Asia/Shanghai", label: "Beijing · Wuhan · Shanghai", short: "China" },
+    { tz: "Asia/Hong_Kong", label: "Hong Kong", short: "Hong Kong" },
+    { tz: "Asia/Singapore", label: "Singapore", short: "Singapore" },
+    { tz: "Asia/Tokyo", label: "Tokyo · Osaka", short: "Tokyo" },
+    { tz: "Asia/Seoul", label: "Seoul", short: "Seoul" },
     { tz: "Australia/Perth", label: "Perth", short: "Perth" },
     { tz: "Australia/Adelaide", label: "Adelaide", short: "Adelaide" },
     { tz: "Australia/Brisbane", label: "Brisbane", short: "Brisbane" },
@@ -639,15 +584,36 @@ textarea::placeholder { color: #8E9BB8; }
     var city = DEVICE_TZ.split("/").pop().replace(/_/g, " ");
     ZONES.unshift({ tz: DEVICE_TZ, label: city + " · this device", short: city });
   }
+  var REGIONS = [
+    { name: "Americas", test: /^America\// },
+    { name: "Europe", test: /^Europe\// },
+    { name: "Asia and Middle East", test: /^Asia\// },
+    { name: "Australia and Pacific", test: /^(Australia|Pacific)\// },
+    { name: "Africa", test: /^Africa\// },
+    { name: "Other", test: /^(Atlantic|Indian|Antarctica|Arctic)\// }
+  ];
+  function cityOf(tz) { return tz.split("/").slice(1).join(", ").replace(/_/g, " ") || tz; }
+  var ALL_ZONES = [];   // [{ name, zones:[{tz,label}] }], without the ones already in the common list
+  try {
+    var known = Intl.supportedValuesOf("timeZone"), common = {};
+    ZONES.forEach(function (z) { common[z.tz] = true; });
+    REGIONS.forEach(function (r) {
+      var zs = known.filter(function (tz) { return r.test.test(tz) && !common[tz]; })
+        .map(function (tz) { return { tz: tz, label: cityOf(tz) }; })
+        .sort(function (a, b) { return a.label < b.label ? -1 : 1; });
+      if (zs.length) ALL_ZONES.push({ name: r.name, zones: zs });
+    });
+  } catch (e) {}
   var zone = DEVICE_TZ;
   try {
     var savedZone = localStorage.getItem(LS_ZONE);
-    if (savedZone && ZONES.some(function (z) { return z.tz === savedZone; })) zone = savedZone;
+    if (savedZone && zoneWorks(savedZone)) zone = savedZone;
   } catch (e) {}
   function zoneShort(tz) {
     for (var i = 0; i < ZONES.length; i++) if (ZONES[i].tz === tz) return ZONES[i].short;
     return typeof tz === "string" && tz ? tz.split("/").pop().replace(/_/g, " ") : "";
   }
+  function nowIn(tz) { var p = tzParts(Date.now(), tz); return clock(p.h, p.mi || 0); }
 
   function keyAt(dateStr, hour) { return Math.ceil(zonedToUtc(dateStr, hour, zone) / HOUR); }
   function at(key) { return tzParts(key * HOUR, zone); }
@@ -691,14 +657,9 @@ textarea::placeholder { color: #8E9BB8; }
     week: (WEEKS.filter(function (w) { return !isPast(w.to - 1); })[0] || WEEKS[0]).id,
     avail: {},            // weekId -> hostId -> { slots:Set, note, tz, updatedAt }
     free: {},             // hostId -> Set of every hour she has submitted, across weeks
-    locks: [],            // [{ id, key }]
     drafts: {},           // weekId -> { slots:Set, note, dirty } for the picked name
     early: false,         // show 12am to 7am rows
-    quickDays: [true, true, true, true, true, false, false], // Mon..Sun chosen in Quick add
-    quickFrom: 16,
-    quickUntil: 22,
     saving: false,
-    selected: null,
     canWrite: null,       // true | false | null (not told)
     dbState: "connecting" // connecting | ready | slow | none | revoked
   };
@@ -733,10 +694,6 @@ textarea::placeholder { color: #8E9BB8; }
   function submittedCount(weekId) { return HOSTS.filter(function (h) { return submitted(weekId, h.id); }).length; }
   function whoHas(key) {
     return HOSTS.filter(function (h) { var f = state.free[h.id]; return f && f.has(key); }).map(function (h) { return h.id; });
-  }
-  function lockIn(week) {
-    for (var i = 0; i < state.locks.length; i++) if (inWeek(week, state.locks[i].key)) return state.locks[i];
-    return null;
   }
   function rebuildFree() {
     var free = {};
@@ -775,7 +732,6 @@ textarea::placeholder { color: #8E9BB8; }
     function scan(set) { set.forEach(function (k) { if (!found && inWeek(week, k) && hourOf(k) < DAY_START) found = true; }); }
     Object.keys(state.free).forEach(function (id) { scan(state.free[id]); });
     scan(draft(week.id).slots);
-    state.locks.forEach(function (l) { if (inWeek(week, l.key) && hourOf(l.key) < DAY_START) found = true; });
     return found;
   }
   function rowsFor(week) {
@@ -808,22 +764,46 @@ textarea::placeholder { color: #8E9BB8; }
   }
 
   // ---------- Render: details row ----------
+  function zoneOption(z) {
+    var o = el("option", null, z.label + " (" + nowIn(z.tz) + " now)");
+    o.value = z.tz;
+    o.dataset.label = z.label;
+    return o;
+  }
+  function renderZoneNow() {
+    $("zoneNow").textContent = "It's " + nowIn(zone) + " there right now. All times on this page are shown in this zone.";
+  }
+  // Keep the "(time now)" in the menu current without rebuilding it under someone's finger
+  function tickZone() {
+    if (document.activeElement !== zoneEl) {
+      Array.prototype.forEach.call(zoneEl.options, function (o) { o.textContent = o.dataset.label + " (" + nowIn(o.value) + " now)"; });
+    }
+    renderZoneNow();
+  }
   function renderZone() {
     zoneEl.textContent = "";
-    ZONES.forEach(function (z) {
-      var o = el("option", null, z.label);
-      o.value = z.tz;
-      if (z.tz === zone) o.selected = true;
-      zoneEl.append(o);
+    var first = document.createElement("optgroup");
+    first.label = "Common";
+    ZONES.forEach(function (z) { first.append(zoneOption(z)); });
+    zoneEl.append(first);
+    ALL_ZONES.forEach(function (r) {
+      var g = document.createElement("optgroup");
+      g.label = "All time zones: " + r.name;
+      r.zones.forEach(function (z) { g.append(zoneOption(z)); });
+      zoneEl.append(g);
     });
+    zoneEl.value = zone;
+    renderZoneNow();
+    setInterval(tickZone, 30000);
     Array.prototype.forEach.call(document.querySelectorAll("[data-legend]"), function (box) {
       box.textContent = "";
       var key = el("span", "key");
-      HOSTS.forEach(function (h) { key.append(el("i", "q on", h.ini)); });
-      var names = el("span");
-      HOSTS.forEach(function (h, i) {
-        if (i) names.append(" · ");
-        names.append(el("b", null, h.ini), " " + h.name);
+      HOSTS.forEach(function (h) { key.append(el("i", "q on h-" + h.id, h.ini)); });
+      var names = el("span", "names");
+      HOSTS.forEach(function (h) {
+        var one = el("span");
+        one.append(el("i", "pdot h-" + h.id), el("b", null, h.name));
+        names.append(one);
       });
       box.append(key, names);
     });
@@ -837,7 +817,7 @@ textarea::placeholder { color: #8E9BB8; }
       b.type = "button";
       b.dataset.host = h.id;
       b.setAttribute("aria-pressed", String(state.me === h.id));
-      b.append(icon("i-check"), el("span", null, h.name));
+      b.append(icon("i-check"), el("i", "pdot h-" + h.id), el("span", null, h.name));
       who.append(b);
     });
   }
@@ -858,10 +838,8 @@ textarea::placeholder { color: #8E9BB8; }
     WEEKS.forEach(function (w, i) { if (w.id === state.week) idx = i; });
     $("weekPrev").disabled = idx <= 0;
     $("weekNext").disabled = idx >= WEEKS.length - 1;
-    var w = WEEKS[idx], d = state.drafts[w.id], lock = lockIn(w), n = submittedCount(w.id);
-    var tail = d && d.dirty ? "your hours aren't sent yet"
-      : lock ? "filming locked " + dayBits(at(lock.key).date).wd + " " + clockOf(lock.key)
-      : n + " of " + HOSTS.length + " submitted";
+    var w = WEEKS[idx], d = state.drafts[w.id], n = submittedCount(w.id);
+    var tail = d && d.dirty ? "your hours aren't sent yet" : n + " of " + HOSTS.length + " submitted";
     $("weekHint").textContent = w.label + " · " + tail;
   }
 
@@ -875,7 +853,7 @@ textarea::placeholder { color: #8E9BB8; }
       var cur = submitted(state.week, h.id);
       bar.append(el("i", cur ? "in" : null));
       var row = el("div", "prow"), left = el("span");
-      left.append(el("b", null, h.name));
+      left.append(el("i", "pdot h-" + h.id), el("b", null, h.name));
       if (cur) {
         done++;
         var a = entry(state.week, h.id), n = a.slots.size;
@@ -932,7 +910,7 @@ textarea::placeholder { color: #8E9BB8; }
       var me = h.id === state.me;
       var on = me ? mine : ids.indexOf(h.id) >= 0;
       if (on) count++;
-      btn.append(el("i", "q" + (on ? " on" : "") + (on && me ? " me" : ""), on ? h.ini : ""));
+      btn.append(el("i", "q" + (on ? " on h-" + h.id : ""), on ? h.ini : ""));
     });
     btn.setAttribute("aria-pressed", String(mine));
     btn.classList.toggle("full", count === HOSTS.length);
@@ -940,7 +918,6 @@ textarea::placeholder { color: #8E9BB8; }
 
   function renderMyGrid() {
     var grid = $("myGrid"), week = weekById(state.week), d = draft();
-    var lock = lockIn(week);
     grid.textContent = "";
     grid.className = "sheet" + (state.me ? "" : " off");
     sheetHead(grid, week, true);
@@ -949,7 +926,7 @@ textarea::placeholder { color: #8E9BB8; }
       week.days.forEach(function (dateStr) {
         var key = keyAt(dateStr, h);
         var free = whoHas(key).filter(function (id) { return id !== state.me; });
-        var btn = el("button", "hr" + (state.selected === key ? " sel" : "") + (lock && lock.key === key ? " lock" : ""));
+        var btn = el("button", "hr");
         btn.type = "button";
         btn.dataset.slot = String(key);
         btn.dataset.date = dateStr;
@@ -963,72 +940,9 @@ textarea::placeholder { color: #8E9BB8; }
       });
     });
     $("gridHint").textContent = !state.me
-      ? "Pick your name first, then tap the hours you're free. Blue corners show who's already free."
-      : "Tap the hours you're free, or use Quick Add for several days at once. Tap a day or a time to fill a whole column or row. Blue corners are the others, green is you.";
+      ? "Pick your name first, then tap the hours you're free. Coloured corners show who's already free."
+      : "Tap the hours you're free. Tap a day or a time to fill a whole column or row; on a computer you can click and drag. Each corner is one person, in her own colour.";
     renderEarlyButtons();
-  }
-
-  // ---------- Quick add: the same hours on several days ----------
-  function quickDates(week) {
-    // the chosen days of this week that still have time left in them
-    return week.days.filter(function (dateStr, i) {
-      return state.quickDays[i] && !isPast(keyAt(addDays(dateStr, 1), 0) - 1);
-    });
-  }
-  function quickKeys(week) {
-    var keys = [];
-    quickDates(week).forEach(function (dateStr) {
-      for (var h = state.quickFrom; h < state.quickUntil; h++) {
-        var k = keyAt(dateStr, h);
-        if (!isPast(k)) keys.push(k);
-      }
-    });
-    return keys;
-  }
-  function renderQuick() {
-    var week = weekById(state.week), box = $("qDays");
-    $("quick").classList.toggle("off", !state.me);
-    box.textContent = "";
-    week.days.forEach(function (dateStr, i) {
-      var d = dayBits(dateStr), b = el("button", null, d.wd);
-      b.type = "button";
-      b.dataset.i = String(i);
-      b.setAttribute("aria-pressed", String(!!state.quickDays[i]));
-      b.setAttribute("aria-label", d.wd + " " + d.mo + " " + d.dn);
-      if (isPast(keyAt(addDays(dateStr, 1), 0) - 1)) b.disabled = true;
-      box.append(b);
-    });
-    // Hour menus, labelled in the chosen zone; rebuilt only when the zone or week changes
-    var from = $("qFrom"), until = $("qUntil"), sig = zone + "|" + week.id;
-    if (from.dataset.sig !== sig) {
-      from.textContent = ""; until.textContent = "";
-      for (var h = 0; h <= 24; h++) {
-        var label = h === 24 ? clockOf(keyAt(addDays(week.days[0], 1), 0)) + " (midnight)" : clockOf(keyAt(week.days[0], h));
-        if (h < 24) { var a = el("option", null, label); a.value = String(h); from.append(a); }
-        if (h > 0) { var u = el("option", null, label); u.value = String(h); until.append(u); }
-      }
-      from.dataset.sig = sig;
-    }
-    from.value = String(state.quickFrom);
-    until.value = String(state.quickUntil);
-    var n = quickDates(week).length, any = quickKeys(week).length > 0;
-    $("qAdd").textContent = n === 0 ? "Pick at least one day" : "Add to " + n + (n === 1 ? " day" : " days");
-    $("qAdd").disabled = !state.me || state.saving || !any;
-    $("qRemove").disabled = !state.me || state.saving || !any;
-  }
-  function quickApply(add) {
-    if (!state.me || state.saving) return;
-    var week = weekById(state.week), d = draft(), keys = quickKeys(week), changed = 0;
-    keys.forEach(function (k) {
-      if (add && !d.slots.has(k)) { d.slots.add(k); changed++; }
-      if (!add && d.slots.has(k)) { d.slots.delete(k); changed++; }
-    });
-    if (changed) d.dirty = true;
-    var days = quickDates(week).length;
-    $("qMsg").textContent = changed === 0
-      ? (add ? "Those hours were already picked." : "None of those hours were picked.")
-      : (add ? "Added " : "Removed ") + hoursText(changed) + " across " + days + (days === 1 ? " day" : " days") + ". Remember to submit.";
-    renderMyGrid(); renderWeeks(); renderSelection();
   }
 
   // ---------- Render: your selection, submit button, stepper ----------
@@ -1097,85 +1011,6 @@ textarea::placeholder { color: #8E9BB8; }
     });
   }
 
-  // ---------- Render: everyone ----------
-  // Back-to-back hours with the same people free, as one window.
-  function windows(week) {
-    var runs = [], cur = null;
-    for (var k = week.from; k < week.to; k++) {
-      var ids = isPast(k) ? [] : whoHas(k);
-      var sig = ids.join(",");
-      if (cur && cur.sig === sig && cur.end === k && at(k).date === cur.date) { cur.end = k + 1; continue; }
-      cur = ids.length ? { start: k, end: k + 1, ids: ids, sig: sig, date: at(k).date } : null;
-      if (cur) runs.push(cur);
-    }
-    return runs;
-  }
-
-  function renderBest() {
-    var best = $("best"), week = weekById(state.week);
-    best.textContent = "";
-    var runs = windows(week);
-    var max = runs.reduce(function (m, r) { return Math.max(m, r.ids.length); }, 0);
-    var subs = submittedCount(state.week);
-    $("bestLabel").textContent = max === HOSTS.length ? "Everyone's Free" : "Best Windows";
-    if (max === 0) {
-      best.append(el("div", "empty", state.dbState === "connecting"
-        ? "Loading everyone's times…"
-        : "No times in yet for " + week.range + ". Windows show up here as people submit."));
-      return;
-    }
-    if (max < 2) {
-      best.append(el("div", "empty", "No overlap yet. " + subs + " of " + HOSTS.length + " have submitted for " + week.range + "."));
-      return;
-    }
-    var top = runs.filter(function (r) { return r.ids.length >= 2; })
-      .sort(function (x, y) { return y.ids.length - x.ids.length || x.start - y.start; });
-    top.slice(0, 4).forEach(function (r) {
-      var all = r.ids.length === HOSTS.length;
-      var picked = state.selected != null && state.selected >= r.start && state.selected < r.end;
-      var btn = el("button", (all ? "full" : "") + (picked ? " on" : ""));
-      btn.type = "button";
-      btn.dataset.pick = String(r.start);
-      var left = el("div");
-      left.append(el("div", "a", dayOf(r.start) + " · " + rangeOf(r.start, r.end)));
-      var missing = HOSTS.filter(function (h) { return r.ids.indexOf(h.id) < 0; }).map(function (h) { return h.name; });
-      left.append(el("div", "b", hoursText(r.end - r.start) + (missing.length ? " · without " + list(missing) : " · all four")));
-      btn.append(left, el("div", "c", r.ids.length + "/" + HOSTS.length));
-      best.append(btn);
-    });
-    if (top.length > 4) best.append(el("p", "hint", "More overlaps show on the calendar."));
-  }
-
-  // The window tapped under Best Windows: who's in, and the lock button.
-  function renderPick() {
-    var box = $("pickBox"), week = weekById(state.week);
-    if (state.selected == null) { box.hidden = true; return; }
-    box.hidden = false;
-    var key = state.selected, ids = whoHas(key);
-    var inNames = ids.map(hostName);
-    var waiting = HOSTS.filter(function (h) { return ids.indexOf(h.id) < 0 && !submitted(state.week, h.id); }).map(function (h) { return h.name; });
-    var outNames = HOSTS.filter(function (h) { return ids.indexOf(h.id) < 0 && waiting.indexOf(h.name) < 0; }).map(function (h) { return h.name; });
-    var bits = [];
-    bits.push(inNames.length ? "In: " + list(inNames) : "Nobody in yet");
-    if (outNames.length) bits.push("Out: " + list(outNames));
-    if (waiting.length) bits.push("Waiting: " + list(waiting));
-    var t = $("pickText");
-    t.textContent = "";
-    t.append(el("strong", null, dayOf(key) + " · starts " + clockOf(key)), bits.join(" · "));
-    var lock = lockIn(week), isLocked = !!lock && lock.key === key, b = $("lockBtn2");
-    b.querySelector(".lbl").textContent = isLocked ? "Locked" : "Lock " + clockOf(key) + " start";
-    b.disabled = isLocked || !writable() || state.saving;
-  }
-
-  function renderLocked() {
-    var box = $("locked"), lock = lockIn(weekById(state.week));
-    if (!lock) { box.hidden = true; return; }
-    box.hidden = false;
-    $("lockedWhen").textContent = dayOf(lock.key) + " · " + clockOf(lock.key);
-    $("lockedSub").textContent = "Start time, " + zoneShort(zone) + " time";
-    $("unlockBtn").hidden = !writable();
-  }
-
   function renderNotice() {
     var n = $("notice"), msg = "";
     if (state.setupError) msg = state.setupError;
@@ -1189,7 +1024,7 @@ textarea::placeholder { color: #8E9BB8; }
   }
 
   function renderShared() {
-    renderNotice(); renderWeeks(); renderProgress(); renderLocked(); renderQuick(); renderMyGrid(); renderBest(); renderPick(); renderSelection();
+    renderNotice(); renderWeeks(); renderProgress(); renderMyGrid(); renderSelection();
   }
   function renderAll() {
     renderWho(); renderShared();
@@ -1200,9 +1035,9 @@ textarea::placeholder { color: #8E9BB8; }
     if (!zoneWorks(zoneEl.value)) return;
     zone = zoneEl.value;
     try { localStorage.setItem(LS_ZONE, zone); } catch (e) {}
+    renderZoneNow();
     buildWeeks();
     if (!weekById(state.week)) state.week = WEEKS[0].id;
-    state.selected = null;
     refreshDrafts();
     showNote(true);
     renderAll();
@@ -1211,7 +1046,6 @@ textarea::placeholder { color: #8E9BB8; }
   function goWeek(id) {
     if (state.saving || !weekById(id) || id === state.week) { renderWeeks(); return; }
     state.week = id;
-    state.selected = null;
     showNote(true);
     renderMyGrid(); renderShared();
   }
@@ -1232,8 +1066,7 @@ textarea::placeholder { color: #8E9BB8; }
     state.drafts = {};
     refreshDrafts();
     showNote(true);
-    $("qMsg").textContent = "";
-    renderWho(); renderQuick(); renderMyGrid(); renderWeeks(); renderSelection();
+    renderWho(); renderMyGrid(); renderWeeks(); renderSelection();
   });
 
   function setCell(btn, add) {
@@ -1295,34 +1128,6 @@ textarea::placeholder { color: #8E9BB8; }
     if (hourBtn) toggleCells($("myGrid").querySelectorAll('button[data-slot][data-hour="' + hourBtn.dataset.hour + '"]'));
   });
 
-  $("qDays").addEventListener("click", function (e) {
-    var b = e.target.closest("button[data-i]");
-    if (!b || b.disabled) return;
-    state.quickDays[+b.dataset.i] = !state.quickDays[+b.dataset.i];
-    $("qMsg").textContent = "";
-    renderQuick();
-  });
-  $("quick").addEventListener("click", function (e) {
-    var b = e.target.closest("button[data-set]");
-    if (!b) return;
-    var set = b.dataset.set;
-    state.quickDays = [0, 1, 2, 3, 4, 5, 6].map(function (i) { return set === "all" ? true : set === "weekend" ? i >= 5 : i < 5; });
-    $("qMsg").textContent = "";
-    renderQuick();
-  });
-  $("qFrom").addEventListener("change", function () {
-    state.quickFrom = +$("qFrom").value;
-    if (state.quickUntil <= state.quickFrom) state.quickUntil = state.quickFrom + 1;
-    renderQuick();
-  });
-  $("qUntil").addEventListener("change", function () {
-    state.quickUntil = +$("qUntil").value;
-    if (state.quickFrom >= state.quickUntil) state.quickFrom = state.quickUntil - 1;
-    renderQuick();
-  });
-  $("qAdd").addEventListener("click", function () { quickApply(true); });
-  $("qRemove").addEventListener("click", function () { quickApply(false); });
-
   document.addEventListener("click", function (e) {
     var b = e.target.closest("[data-early]");
     if (!b || b.disabled) return;
@@ -1369,48 +1174,6 @@ textarea::placeholder { color: #8E9BB8; }
   }
   $("submitBtn").addEventListener("click", submit);
   $("submitBtn2").addEventListener("click", submit);
-
-  $("best").addEventListener("click", function (e) {
-    var b = e.target.closest("button[data-pick]");
-    if (!b) return;
-    var key = +b.dataset.pick;
-    state.selected = state.selected === key ? null : key;
-    renderMyGrid(); renderBest(); renderPick();
-  });
-
-  function lockIt() {
-    if (!db || state.selected == null || state.saving) return;
-    var key = state.selected, weekId = state.week, old = lockIn(weekById(weekId));
-    state.saving = true;
-    renderPick();
-    withRetry(function () { return db.doc("locks/" + weekId).set({ slot: key, at: Date.now() }); }).then(function () {
-      // A lock made from another zone's calendar can sit under a neighbouring week's name.
-      return old && old.id !== weekId ? db.doc("locks/" + old.id).delete() : null;
-    }).then(function () {
-      state.saving = false;
-      state.locks = state.locks.filter(function (l) { return l.id !== weekId && !(old && l.id === old.id); });
-      state.locks.push({ id: weekId, key: key });
-      renderShared();
-    }).catch(function (err) {
-      state.saving = false;
-      if (writeFailed(err)) renderPick(); else renderShared();
-    });
-  }
-  $("lockBtn2").addEventListener("click", lockIt);
-
-  $("unlockBtn").addEventListener("click", function () {
-    var lock = lockIn(weekById(state.week));
-    if (!db || state.saving || !lock) return;
-    state.saving = true;
-    withRetry(function () { return db.doc("locks/" + lock.id).delete(); }).then(function () {
-      state.saving = false;
-      state.locks = state.locks.filter(function (l) { return l.id !== lock.id; });
-      renderShared();
-    }).catch(function (err) {
-      state.saving = false;
-      if (!writeFailed(err)) renderShared();
-    });
-  });
 
   // ---------- First paint ----------
   renderZone();
@@ -1482,7 +1245,7 @@ textarea::placeholder { color: #8E9BB8; }
         emit(name);
       }).catch(function () {});
     }
-    function refresh() { load("avail"); load("locks"); }
+    function refresh() { load("avail"); }
     setInterval(function () { if (!document.hidden) refresh(); }, 20000);
     document.addEventListener("visibilitychange", function () { if (!document.hidden) refresh(); });
     var started = false;
@@ -1620,18 +1383,6 @@ textarea::placeholder { color: #8E9BB8; }
         rebuildFree();
         if (!snap.metadata.fromCache) settled();
         if (!state.saving) { refreshDrafts(); showNote(false); renderMyGrid(); }
-        renderShared();
-      }, dead);
-
-      // One locked start time per week: locks/<week's Monday>
-      db.collection("locks").onSnapshot(function (snap) {
-        var next = [];
-        snap.docs.forEach(function (d) {
-          var k = toKey((d.data() || {}).slot);
-          if (k != null && /^\d{4}-\d{2}-\d{2}$/.test(d.id)) next.push({ id: d.id, key: k });
-        });
-        state.locks = next;
-        renderMyGrid();
         renderShared();
       }, dead);
 
