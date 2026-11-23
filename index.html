@@ -6,48 +6,25 @@
 <title>The Player's Box Filming Times</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&family=Fira+Sans+Condensed:wght@700;800&display=swap" rel="stylesheet">
 <style>
-/* Layout idea: one phone-width column. Pick a week, see who has submitted for it, then a
-   seven-day sheet with hours down the side. Optic yellow marks "in"; court blue carries the rest. */
+/* Layout idea: a studio at night. Details across the top, the hour sheet on the left, your
+   selection and the submit button on the right; everything stacks to one column on a phone.
+   One dark theme on purpose: navy panels, blue for controls, green for hours you picked. */
 :root {
-  --bg: #F2F5FA;
-  --surface: #FFFFFF;
-  --ink: #0F1F3D;
-  --muted: #56667F;
-  --line: #D3DBE8;
-  --court: #1D5BBA;
-  --ball: #D9F24B;
-  --on-ball: #0F1F3D;
-  --warn: #A85A00;
-  --font-display: "Big Shoulders Display", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
-  --font-body: "Instrument Sans", -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  color-scheme: light;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #0A152B;
-    --surface: #13233F;
-    --ink: #EEF3FB;
-    --muted: #9FB1CE;
-    --line: #2B3E60;
-    --court: #74A8F7;
-    --ball: #D9F24B;
-    --on-ball: #0F1F3D;
-    --warn: #F0B45A;
-    color-scheme: dark;
-  }
-}
-:root[data-theme="dark"] {
-  --bg: #0A152B;
-  --surface: #13233F;
-  --ink: #EEF3FB;
-  --muted: #9FB1CE;
-  --line: #2B3E60;
-  --court: #74A8F7;
-  --ball: #D9F24B;
-  --on-ball: #0F1F3D;
+  --bg: #070D1A;
+  --panel: #0F182B;
+  --panel-2: #152038;
+  --line: #2A3A5C;
+  --ink: #FFFFFF;
+  --muted: #B3C0DA;
+  --blue: #3D82F7;
+  --blue-soft: #A9CCFF;
+  --green: #1B9A47;
+  --green-line: #46D97A;
   --warn: #F0B45A;
+  --font-display: "Fira Sans Condensed", "Arial Narrow", Arial, sans-serif;
+  --font-body: "Fira Sans", -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   color-scheme: dark;
 }
 
@@ -58,259 +35,178 @@ body {
   background: var(--bg);
   color: var(--ink);
   font-family: var(--font-body);
-  font-size: 16px;
-  line-height: 1.45;
+  font-size: 17px;
+  line-height: 1.4;
 }
-button, textarea { font: inherit; color: inherit; }
+button, textarea, select { font: inherit; color: inherit; }
 button { cursor: pointer; -webkit-tap-highlight-color: transparent; }
-:focus-visible { outline: 3px solid var(--court); outline-offset: 2px; }
+:focus-visible { outline: 3px solid var(--blue-soft); outline-offset: 2px; }
 [hidden] { display: none !important; }
+svg.ic { width: 26px; height: 26px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 
-.wrap {
-  max-width: 560px;
-  margin: 0 auto;
-  padding: 20px 16px 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
+.wrap { max-width: 1320px; margin: 0 auto; padding: 0 18px 28px; display: flex; flex-direction: column; gap: 18px; }
 
-/* Header */
-.eyebrow {
-  margin: 0;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--court);
+/* Header: stage lights and a director's chair */
+.hero {
+  position: relative;
+  margin: 0 -18px;
+  padding: 22px 18px 20px;
+  overflow: hidden;
+  background:
+    radial-gradient(260px 200px at 62% -10%, rgba(255, 244, 214, 0.55), transparent 70%),
+    radial-gradient(420px 260px at 88% 10%, rgba(61, 130, 247, 0.40), transparent 70%),
+    radial-gradient(520px 300px at 40% 0%, rgba(40, 80, 160, 0.35), transparent 70%),
+    linear-gradient(180deg, #0C1830 0%, var(--bg) 100%);
+  border-bottom: 1px solid var(--line);
 }
+.hero-text { position: relative; max-width: 760px; }
+.eyebrow { margin: 0; font-size: 17px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #6FA8FF; }
 h1 {
   margin: 2px 0 6px;
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: 46px;
-  line-height: 0.95;
-  letter-spacing: 0.005em;
+  font-size: clamp(38px, 6vw, 56px);
+  line-height: 1;
   text-transform: uppercase;
   text-wrap: balance;
 }
-.lede { margin: 0; color: var(--muted); font-size: 15px; max-width: 46ch; }
-.lede strong { color: var(--ink); font-weight: 600; }
-.baseline {
-  height: 10px;
-  border-bottom: 3px solid var(--ink);
-  position: relative;
-  margin-top: 12px;
-}
-.baseline::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  bottom: 0;
-  width: 3px;
-  height: 10px;
-  background: var(--ink);
-}
+.lede { margin: 0; color: #DDE6F7; font-size: 19px; }
+.chair { position: absolute; right: 28px; bottom: -6px; width: 250px; height: auto; display: none; }
 
-/* Numbered steps: one card each, in the order you do them */
-.step {
-  background: var(--surface);
+/* Password screen */
+.gate { min-height: 100vh; min-height: 100dvh; display: flex; align-items: center; justify-content: center; padding: 24px 18px;
+  background:
+    radial-gradient(320px 240px at 50% 0%, rgba(255, 244, 214, 0.30), transparent 70%),
+    radial-gradient(520px 320px at 70% 10%, rgba(61, 130, 247, 0.35), transparent 70%),
+    var(--bg); }
+.gate form { width: 100%; max-width: 420px; }
+.gate h1 { font-size: 40px; margin: 0; }
+.gate input {
+  width: 100%; font: inherit; font-size: 22px; font-weight: 600; letter-spacing: 0.08em; text-align: center; color: #fff;
+  background: #0B1324; border: 1.5px solid #8794B0; border-radius: 10px; padding: 14px; min-height: 56px;
+}
+.gate .err { margin: 0; font-size: 16px; color: #FFB4A8; min-height: 1.4em; }
+
+/* Stepper */
+.stepper { list-style: none; margin: 0; padding: 4px 0; display: flex; align-items: center; gap: 12px; }
+.stepper .st { display: flex; align-items: center; gap: 12px; color: var(--muted); font-weight: 500; white-space: nowrap; }
+.stepper .dot {
+  width: 38px; height: 38px; flex: none; border-radius: 50%;
+  border: 2px solid #5B6E96; color: var(--ink);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 20px;
+}
+.stepper .rail { flex: 1; height: 3px; border-radius: 2px; background: #33466C; min-width: 12px; }
+.stepper .st.current, .stepper .st.done { color: var(--ink); font-weight: 700; }
+.stepper .st.current .dot { background: var(--blue); border-color: #8DB8FF; box-shadow: 0 0 0 4px rgba(61, 130, 247, 0.28); }
+.stepper .st.done .dot { background: var(--green); border-color: var(--green-line); }
+.stepper .rail.fill { background: var(--blue); }
+
+/* Cards */
+.card {
+  background: linear-gradient(180deg, var(--panel-2), var(--panel));
   border: 1.5px solid var(--line);
   border-radius: 14px;
-  padding: 14px 12px;
-  gap: 12px;
-}
-.step.next { border-color: var(--court); box-shadow: 0 0 0 1.5px var(--court); }
-.step.wait > :not(.sh):not(.tabs) { opacity: 0.45; pointer-events: none; }
-.sh { display: flex; align-items: center; gap: 10px; }
-.num {
-  flex: none;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background: var(--ink);
-  color: var(--surface);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-display);
-  font-weight: 800;
-  font-size: 19px;
-  line-height: 1;
-}
-.step.next .num { background: var(--court); }
-h2 {
-  margin: 0;
-  font-family: var(--font-display);
-  font-weight: 800;
-  font-size: 24px;
-  line-height: 1;
-  text-transform: uppercase;
-  letter-spacing: 0.01em;
-}
-.sh .opt { margin-left: auto; font-size: 12px; font-weight: 600; color: var(--muted); }
-.step .tabs, .step select, .step textarea, .step .who button, .step .weeks button, .step .hr, .step .cell { background: var(--bg); }
-.step .tabs button { background: transparent; }
-.step .tabs button[aria-selected="true"], .step .who button[aria-pressed="true"], .step .weeks button[aria-pressed="true"] { background: var(--ink); }
-.step .best button, .step .notes div, .step .empty { background: var(--bg); }
-.step .best button.full { background: var(--ball); }
-h3 {
-  margin: 0;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-.block { display: flex; flex-direction: column; gap: 8px; }
-section { display: flex; flex-direction: column; gap: 16px; }
-.hint { margin: 0; font-size: 13px; color: var(--muted); }
-
-/* Notices */
-.notice {
-  border: 1px solid var(--line);
-  border-left: 4px solid var(--warn);
-  background: var(--surface);
-  border-radius: 8px;
-  padding: 10px 12px;
-  font-size: 14px;
-}
-.locked {
-  background: var(--ball);
-  color: var(--on-ball);
-  border-radius: 10px;
-  padding: 12px 14px;
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  justify-content: space-between;
-}
-.locked .k { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
-.locked .v { font-family: var(--font-display); font-weight: 800; font-size: 26px; line-height: 1.05; text-transform: uppercase; }
-.locked .s { font-size: 13px; font-weight: 500; }
-.locked button {
-  flex: none;
-  background: transparent;
-  color: var(--on-ball);
-  border: 1.5px solid var(--on-ball);
-  border-radius: 999px;
-  padding: 6px 12px;
-  font-size: 13px;
-  font-weight: 600;
-}
-
-/* Week picker */
-.weeks { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
-.weeks button {
-  background: var(--surface);
-  border: 1.5px solid var(--line);
-  border-radius: 10px;
-  padding: 9px 4px 8px 6px;
+  padding: 18px;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 1px;
-  text-align: left;
-  line-height: 1.2;
+  gap: 14px;
   min-width: 0;
-  overflow: hidden;
 }
-.weeks .wl { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
-.weeks .wr { font-family: var(--font-display); font-weight: 800; font-size: clamp(12px, 3.5vw, 16px); text-transform: uppercase; white-space: nowrap; }
-.weeks .ws { font-size: 12px; font-weight: 600; color: var(--muted); }
-.weeks .ws.unsent { color: var(--warn); }
-.weeks button[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--bg); }
-.weeks button[aria-pressed="true"] .wl,
-.weeks button[aria-pressed="true"] .ws { color: var(--bg); opacity: 0.8; }
+h2 { margin: 0; font-size: 22px; font-weight: 600; display: flex; align-items: center; gap: 12px; }
+h2 svg.ic { color: #C9DBFF; width: 30px; height: 30px; }
+h3 { margin: 0; font-size: 19px; font-weight: 600; }
+.hint { margin: 0; font-size: 16px; color: var(--muted); }
+.row3 { display: grid; grid-template-columns: 1fr; gap: 14px; }
 
-/* Who has submitted */
-.progress { display: flex; flex-direction: column; gap: 8px; }
-.ptop { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
-.pcount { font-family: var(--font-display); font-weight: 800; font-size: 26px; line-height: 1; text-transform: uppercase; font-variant-numeric: tabular-nums; white-space: nowrap; }
-.pnote { font-size: 12px; font-weight: 600; color: var(--muted); text-align: right; }
-.pbar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
-.pseg { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-.pseg .track { height: 12px; border-radius: 999px; border: 1.5px dashed var(--muted); background: transparent; margin-bottom: 4px; }
-.pseg.in .track { background: var(--ball); border: 1.5px solid var(--ink); }
-.pseg b { font-size: 14px; line-height: 1.2; }
-.pseg span { font-size: 12px; color: var(--muted); line-height: 1.2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.pseg .where { color: var(--court); font-weight: 600; }
-.pseg.in span { color: var(--ink); }
-
-/* Tabs */
-.tabs {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4px;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  padding: 4px;
-}
-.tabs button {
-  border: 0;
-  background: transparent;
-  border-radius: 9px;
-  padding: 10px 8px;
-  font-weight: 600;
-  font-size: 15px;
-  color: var(--muted);
-}
-.tabs button[aria-selected="true"] { background: var(--ink); color: var(--bg); }
+.notice { border: 1.5px solid var(--line); border-left: 5px solid var(--warn); background: var(--panel); border-radius: 10px; padding: 12px 14px; font-size: 16px; }
 
 /* Who are you */
-.who { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.who { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
 .who button {
-  background: var(--surface);
-  border: 1.5px solid var(--line);
-  border-radius: 10px;
-  padding: 12px 4px;
-  font-weight: 700;
-  font-size: 16px;
-}
-.who button[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--bg); }
-
-/* Week sheet: hours down, seven days across */
-.sheet {
-  display: grid;
-  grid-template-columns: max-content repeat(7, minmax(0, 1fr));
-  gap: 3px;
-}
-.sheet.off { pointer-events: none; }
-.tm {
-  padding-right: 6px;
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  font-size: 12px;
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
-.tm span { min-width: 30px; text-align: right; }
-.tm.head { align-items: flex-end; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); padding-bottom: 4px; }
-.dh {
-  border: 0;
   background: transparent;
-  padding: 0 0 4px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-end;
-  line-height: 1;
-  gap: 1px;
+  border: 1.5px solid #8794B0;
+  border-radius: 9px;
+  padding: 11px 4px;
+  font-weight: 600;
+  font-size: 18px;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
   min-width: 0;
 }
-div.dh { cursor: default; }
-.dh .wd { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
-.dh .dn { font-family: var(--font-display); font-weight: 800; font-size: 24px; }
-.dh.today .wd { color: var(--court); }
-.dh.gone { opacity: 0.4; }
+.who button svg { width: 18px; height: 18px; display: none; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.who button[aria-pressed="true"] { background: linear-gradient(180deg, #B9D6FF, #86B7FF); border-color: #D6E6FF; color: #0A1A3A; font-weight: 700; }
+.who button[aria-pressed="true"] svg { display: block; }
 
-.hr, .cell {
-  height: 36px;
-  background: var(--surface);
+/* Selects */
+select {
+  width: 100%;
+  appearance: none; -webkit-appearance: none;
+  background-color: transparent;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 20px;
+  border: 1.5px solid #8794B0;
+  border-radius: 9px;
+  padding: 11px 40px 11px 14px;
+  font-size: 18px;
+  font-weight: 600;
+  min-height: 48px;
+  text-overflow: ellipsis;
+}
+select option { background: #0F182B; color: #fff; }
+.weekpick { display: grid; grid-template-columns: 44px 1fr 44px; gap: 8px; align-items: center; }
+.weekpick button { height: 48px; background: transparent; border: 0; border-radius: 9px; display: flex; align-items: center; justify-content: center; }
+.weekpick button svg { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.weekpick button:disabled { opacity: 0.3; cursor: default; }
+.weekpick select { text-align: center; text-align-last: center; }
+
+/* Best windows: a band across the page */
+.bhead { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 18px; }
+.bestband .best { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 10px; }
+.bestband .pick { flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: space-between; }
+.bestband .pick .primary { width: auto; font-size: 18px; padding: 12px 20px; }
+
+/* Main area. Phone: quick add, calendar, then the rest. Wide: calendar left, the rest right. */
+.main { display: grid; grid-template-columns: 1fr; gap: 18px; align-items: start; }
+.side { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+.gridcard { padding: 18px 10px; }
+.gridcard > .gridhead, .gridcard .pane > :not(.sheet) { margin-left: 8px; margin-right: 8px; }
+.gridhead { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+.gridhead h2 { font-size: 26px; }
+.pane { display: flex; flex-direction: column; gap: 12px; }
+.tabs { display: grid; grid-template-columns: 1fr 1fr; border: 1.5px solid #5B6E96; border-radius: 9px; overflow: hidden; min-width: 240px; flex: 1; max-width: 320px; }
+.tabs button { border: 0; background: transparent; padding: 10px 14px; font-weight: 500; font-size: 17px; color: var(--muted); }
+.tabs button[aria-selected="true"] { background: linear-gradient(180deg, #C2DBFF, #8FBCFF); color: #0A1A3A; font-weight: 700; }
+
+/* Hour sheet */
+.sheet { display: grid; grid-template-columns: max-content repeat(7, minmax(0, 1fr)); gap: 4px; user-select: none; -webkit-user-select: none; }
+.sheet.off { opacity: 0.5; pointer-events: none; }
+.tm { padding: 0 8px 0 0; display: flex; align-items: center; font-size: 15px; font-weight: 600; white-space: nowrap; font-variant-numeric: tabular-nums; background: transparent; border: 0; color: var(--ink); text-align: left; }
+.dh {
+  background: #0B1324;
   border: 1.5px solid var(--line);
+  border-radius: 7px;
+  padding: 7px 2px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  line-height: 1.15;
+  min-width: 0;
+  margin-bottom: 4px;
+}
+div.dh { cursor: default; }
+.dh b { font-size: 16px; font-weight: 700; }
+.dh span { font-size: 14px; color: #D4DEF2; white-space: nowrap; }
+.dh span i { font-style: normal; display: none; }
+.dh.today { background: linear-gradient(180deg, #2F6FE8, #2458C4); border-color: #6FA3FF; }
+.dh.today span { color: #fff; }
+.dh.gone { opacity: 0.45; }
+
+/* One box per hour, one corner per person, always in the same place.
+   Blue corner = she's free. Green corner = you. */
+.hr {
+  height: 44px;
+  background: #101A30;
+  border: 1.5px solid #26344F;
   border-radius: 7px;
   padding: 0;
   min-width: 0;
@@ -319,236 +215,328 @@ div.dh { cursor: default; }
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr;
 }
-/* One corner per person, always in the same place */
-.q {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-style: normal;
-  font-size: 9px;
-  font-weight: 700;
-  line-height: 1;
-  letter-spacing: -0.01em;
-  min-width: 0;
-}
-.q.on { background: color-mix(in srgb, var(--court) 30%, var(--surface)); }
-.q.me, .full .q.on { background: var(--ball); color: var(--on-ball); }
-.hr[aria-pressed="true"] { border-color: var(--ink); }
+.q { display: flex; align-items: center; justify-content: center; font-style: normal; font-size: clamp(11px, 3.1vw, 13px); font-weight: 700; line-height: 1; min-width: 0; color: #fff; }
+.q.on { background: #2B5FC0; }
+.q.me { background: linear-gradient(180deg, #25AE56, #17863C); }
+.hr[aria-pressed="true"] { background: #0E2A22; border-color: var(--green-line); box-shadow: 0 0 10px rgba(70, 217, 122, 0.30); }
+.hr.full .q.on { background: linear-gradient(180deg, #25AE56, #17863C); }
+.hr.full { border-color: #B6FFCB; box-shadow: 0 0 12px rgba(70, 217, 122, 0.55); }
+.hr.sel { border-color: #fff; box-shadow: 0 0 0 2px #fff; }
+.hr.lock { border-color: #FFD95A; box-shadow: 0 0 0 2.5px #FFD95A; }
 .hr:disabled { opacity: 0.35; cursor: default; border-style: dashed; }
-.full { border-color: var(--ink); }
-.cell.past { opacity: 0.35; }
-.cell.sel { border-color: var(--ink); box-shadow: 0 0 0 2px var(--ink); }
-.cell.lock { border-color: var(--court); box-shadow: 0 0 0 2px var(--court); }
-
-.legend { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--muted); }
-.legend .key {
-  flex: none;
-  width: 42px;
-  height: 36px;
-  border: 1.5px solid var(--line);
-  border-radius: 7px;
-  overflow: hidden;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1fr;
-  color: var(--ink);
-  background: var(--surface);
-}
+.legend { display: flex; align-items: center; gap: 12px; font-size: 16px; color: var(--muted); }
+.legend { flex-wrap: wrap; }
+.legend .key { flex: none; width: 58px; height: 44px; border: 1.5px solid #26344F; border-radius: 7px; overflow: hidden; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; }
 .legend b { color: var(--ink); }
 
-select {
-  width: 100%;
-  font: inherit;
-  font-weight: 600;
-  color: var(--ink);
-  background: var(--surface);
-  border: 1.5px solid var(--line);
-  border-radius: 10px;
-  padding: 12px;
-  min-height: 46px;
-}
-.linkbtn {
-  align-self: flex-start;
-  background: transparent;
-  border: 0;
-  padding: 6px 0;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--court);
-  text-decoration: underline;
-  text-align: left;
-}
+/* Quick add: fill the same hours on several days at once */
+.quick.off > :not(.qhead) { opacity: 0.5; pointer-events: none; }
+.quick.off .qsets { opacity: 0.5; pointer-events: none; }
+.qhead { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
+.qsets { display: flex; gap: 6px; }
+.qsets button { background: transparent; border: 1.5px solid #5B6E96; border-radius: 999px; padding: 4px 12px; font-size: 15px; font-weight: 600; color: var(--muted); }
+.qdays { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+.qdays button { background: transparent; border: 1.5px solid #8794B0; border-radius: 999px; padding: 9px 0; font-size: 16px; font-weight: 600; min-width: 0; }
+.qdays button[aria-pressed="true"] { background: linear-gradient(180deg, #C2DBFF, #8FBCFF); border-color: #D6E6FF; color: #0A1A3A; font-weight: 700; }
+.qdays button:disabled { opacity: 0.3; cursor: default; }
+.qtimes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.qtimes label { display: flex; flex-direction: column; gap: 4px; font-size: 15px; font-weight: 600; color: var(--muted); }
+.qacts { display: grid; grid-template-columns: 1fr; gap: 6px; justify-items: center; }
+.qacts .go { width: 100%; }
+.qacts .go { background: linear-gradient(180deg, #F4F8FF, #D5E5FF); color: #0A1A3A; border: 0; border-radius: 999px; padding: 12px 16px; font-size: 17px; font-weight: 700; }
+.qacts .go:disabled { background: #223150; color: #9AA8C6; cursor: default; }
+.qacts .undo { background: transparent; border: 0; padding: 8px 4px; font-size: 16px; font-weight: 600; color: var(--blue-soft); text-decoration: underline; text-underline-offset: 3px; }
+.qacts .undo:disabled { color: #6E7C9A; text-decoration: none; cursor: default; }
+.qmsg { margin: 0; font-size: 15px; color: #9FE8B6; }
+.qmsg:empty { display: none; }
+
+.linkbtn { align-self: flex-start; background: transparent; border: 0; padding: 8px 0; font-size: 16px; font-weight: 600; color: var(--blue-soft); text-decoration: underline; text-underline-offset: 3px; text-align: left; }
 .linkbtn:disabled { color: var(--muted); text-decoration: none; cursor: default; }
-textarea {
-  width: 100%;
-  min-height: 76px;
-  background: var(--surface);
-  border: 1.5px solid var(--line);
-  border-radius: 10px;
-  padding: 10px 12px;
-  resize: vertical;
-}
-textarea::placeholder { color: var(--muted); }
 
-/* Sticky action bar */
-.bar {
-  position: sticky;
-  bottom: 0;
-  z-index: 2;
-  margin: 0 -16px;
-  padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 0px));
-  background: var(--bg);
-  border-top: 1px solid var(--line);
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  justify-content: space-between;
-}
-.bar .t { font-size: 13px; color: var(--muted); min-width: 0; }
-.bar .t strong { display: block; color: var(--ink); font-size: 14px; }
+/* Your selection */
+#selCard h2 svg.ic { color: #fff; background: #1FA34A; border-radius: 50%; padding: 5px; stroke-width: 3; }
+.facts { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; font-size: 18px; font-weight: 500; }
+.facts li { display: flex; align-items: center; gap: 14px; }
+.facts svg.ic { color: #8FB6FF; width: 24px; height: 24px; }
+.rule { height: 1.5px; background: #3A4B70; border: 0; margin: 2px 0; }
+.times { display: flex; flex-direction: column; gap: 12px; }
+.times .day { display: grid; grid-template-columns: 108px 1fr; gap: 6px; align-items: start; }
+.times .dl { font-size: 16px; font-weight: 600; padding-top: 4px; }
+.times .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { border: 1.5px solid #2FAE5D; background: #0E2A22; color: #fff; border-radius: 8px; padding: 3px 9px; font-size: 16px; font-weight: 500; white-space: nowrap; }
+.lab { font-size: 16px; font-weight: 600; }
+textarea { width: 100%; min-height: 70px; font-size: 17px; background: #0B1324; border: 1.5px solid #5B6E96; border-radius: 9px; padding: 10px 12px; resize: vertical; }
+textarea::placeholder { color: #8E9BB8; }
+.status { margin: 0; font-size: 16px; color: var(--muted); }
+.status strong { color: var(--ink); }
+
 .primary {
-  flex: none;
-  background: var(--court);
-  color: var(--bg);
-  border: 0;
-  border-radius: 10px;
-  padding: 13px 18px;
+  width: 100%;
+  background: linear-gradient(180deg, #4F8FFF, #2F6BF0);
+  color: #fff;
+  border: 1px solid #8DB8FF;
+  border-radius: 12px;
+  padding: 16px 18px;
   font-weight: 700;
-  font-size: 15px;
+  font-size: 21px;
+  display: flex; align-items: center; justify-content: center; gap: 12px;
+  box-shadow: 0 6px 22px rgba(61, 130, 247, 0.35);
 }
-.primary:disabled { background: var(--line); color: var(--muted); cursor: default; }
+.primary svg { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.primary:disabled { background: #223150; border-color: #33466C; color: #9AA8C6; box-shadow: none; cursor: default; }
 
-/* Group view */
-.best { display: flex; flex-direction: column; gap: 6px; }
-.best button {
-  text-align: left;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  padding: 10px 12px;
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  justify-content: space-between;
-}
-.best button.full { background: var(--ball); border-color: var(--ball); color: var(--on-ball); }
-.best .a { font-weight: 700; }
-.best .b { font-size: 13px; opacity: 0.8; }
-.best .c { font-family: var(--font-display); font-weight: 800; font-size: 24px; flex: none; font-variant-numeric: tabular-nums; }
-.empty {
-  background: var(--surface);
-  border: 1px dashed var(--line);
-  border-radius: 10px;
-  padding: 14px 12px;
-  color: var(--muted);
-  font-size: 14px;
-}
-.notes { display: flex; flex-direction: column; gap: 6px; }
-.notes div {
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  padding: 10px 12px;
-  font-size: 14px;
-  overflow-wrap: anywhere;
-}
-.notes b { display: block; font-size: 13px; color: var(--muted); }
+/* Who's submitted */
+.pcount { font-size: 18px; font-weight: 600; }
+.pbar4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.pbar4 i { height: 10px; border-radius: 999px; background: #26344F; }
+.pbar4 i.in { background: var(--green); box-shadow: 0 0 8px rgba(70, 217, 122, 0.35); }
+.plist { display: flex; flex-direction: column; gap: 8px; }
+.prow { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 17px; }
+.prow b { font-weight: 600; }
+.prow .sub { color: var(--muted); font-size: 15px; margin-left: 8px; font-weight: 400; }
+.pill { flex: none; border-radius: 999px; padding: 3px 12px; font-size: 15px; font-weight: 600; border: 1.5px solid #5B6E96; color: var(--muted); }
+.pill.in { border-color: #2FAE5D; background: #0E2A22; color: #fff; }
 
-@media (max-width: 360px) {
-  h1 { font-size: 40px; }
-  .q { font-size: 8px; }
-  .weeks button { padding-left: 5px; padding-right: 4px; }
+/* Locked-in banner */
+.locked { background: linear-gradient(180deg, #FFE27A, #FFD03B); color: #1A1400; border-radius: 14px; padding: 14px 16px; display: flex; gap: 12px; align-items: center; justify-content: space-between; }
+.locked .k { font-size: 14px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+.locked .v { font-family: var(--font-display); font-weight: 800; font-size: 28px; line-height: 1.05; text-transform: uppercase; }
+.locked .s { font-size: 15px; font-weight: 500; }
+.locked button { flex: none; background: transparent; color: #1A1400; border: 2px solid #1A1400; border-radius: 999px; padding: 7px 14px; font-size: 15px; font-weight: 700; }
+
+/* Everyone panel */
+.best { display: flex; flex-direction: column; gap: 8px; }
+.best .empty { grid-column: 1 / -1; }
+.best .hint { grid-column: 1 / -1; }
+.best button { text-align: left; background: #0B1324; border: 1.5px solid var(--line); border-radius: 10px; padding: 11px 14px; display: flex; gap: 12px; align-items: center; justify-content: space-between; }
+.best button.full { background: #0E2A22; border-color: #2FAE5D; }
+.best button.on { border-color: #fff; box-shadow: 0 0 0 1.5px #fff; }
+.best .a { font-weight: 600; font-size: 17px; }
+.best .b { font-size: 15px; color: var(--muted); }
+.best .c { font-family: var(--font-display); font-weight: 800; font-size: 26px; flex: none; }
+.empty { background: #0B1324; border: 1.5px dashed var(--line); border-radius: 10px; padding: 14px; color: var(--muted); font-size: 16px; }
+.pick { display: flex; flex-direction: column; gap: 10px; border-top: 1.5px solid #3A4B70; padding-top: 14px; }
+.pick p { margin: 0; font-size: 16px; color: var(--muted); }
+.pick p strong { display: block; color: var(--ink); font-size: 18px; }
+.notes { display: flex; flex-direction: column; gap: 8px; }
+.notes div { background: #0B1324; border: 1.5px solid var(--line); border-radius: 10px; padding: 11px 14px; font-size: 16px; overflow-wrap: anywhere; }
+.notes b { display: block; font-size: 15px; color: var(--muted); font-weight: 600; }
+
+/* Phone: action bar pinned to the bottom of the screen */
+.bar {
+  position: sticky; bottom: 0; z-index: 2;
+  margin: 0 -18px; padding: 12px 18px calc(12px + env(safe-area-inset-bottom, 0px));
+  background: #0B1324; border-top: 1.5px solid #3A4B70;
+  display: flex; gap: 12px; align-items: center; justify-content: space-between;
+}
+.bar .t { font-size: 15px; color: var(--muted); min-width: 0; }
+.bar .t strong { display: block; color: var(--ink); font-size: 17px; }
+.bar .primary { width: auto; flex: none; font-size: 17px; padding: 13px 16px; }
+.bar .primary svg { display: none; }
+
+@media (max-width: 620px) {
+  .stepper .st:not(.current) .lab { display: none; }
+  .who { grid-template-columns: repeat(2, 1fr); }
+  .bestband .bhead .hint, .bestband .best .hint { display: none; }
+  .bestband .best button:nth-of-type(n+3) { display: none; }
+  .bestband .pick .primary { width: 100%; }
+  .gridcard { margin: 0 -18px; border-left: 0; border-right: 0; border-radius: 0; padding-left: 6px; padding-right: 6px; }
+  .sheet { gap: 3px; }
+  .tm { font-size: 13px; padding-right: 5px; }
+  .qdays { gap: 4px; }
+  .qdays button { font-size: 14px; padding: 9px 0; }
+  .dh b { font-size: 13px; }
+  .dh span { font-size: 15px; font-weight: 700; color: #fff; }
+  .hr { height: 46px; }
+  .times .day { grid-template-columns: 1fr; }
+  #selCard .primary { display: none; }
+}
+@media (min-width: 621px) {
+  .dh span i { display: inline; }
+}
+@media (min-width: 900px) {
+  .wrap { padding: 0 24px 32px; }
+  .hero { margin: 0 -24px; padding: 20px 24px 22px; }
+  .chair { display: block; }
+  .row3 { grid-template-columns: 1.25fr 1.05fr 1.05fr; }
+  .main { grid-template-columns: minmax(0, 1fr) 380px; grid-template-rows: auto 1fr; }
+  .main > .gridcard { grid-column: 1; grid-row: 1 / span 2; }
+  .main > .quick { grid-column: 2; grid-row: 1; }
+  .main > .side { grid-column: 2; grid-row: 2; }
+  .gridcard { padding: 20px 14px; }
+  .hr { height: 40px; }
+  .tm { font-size: 17px; padding-right: 14px; }
+  .bar { display: none !important; }
 }
 @media (prefers-reduced-motion: no-preference) {
-  .tabs button, .who button, .weeks button { transition: background-color 0.12s, border-color 0.12s; }
+  .hr, .who button, .tabs button { transition: background-color 0.12s, border-color 0.12s; }
 }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-person" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.600 8 7"/></symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.200 3 14.800 0 18M12 3c-3 3.200-3 14.800 0 18"/></symbol>
+    <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4M7.500 14h2"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.500l4.500 4.500L19 7.500"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+    <symbol id="i-send" viewBox="0 0 24 24"><path d="M21 3L3 10.500l7 2.500 2.500 7L21 3zM10 13l5-5"/></symbol>
+    <symbol id="i-left" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
+    <symbol id="i-right" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></symbol>
+  </defs>
+</svg>
+
+<div class="gate" id="gate" hidden>
+  <form class="card" id="gateForm" autocomplete="off">
     <p class="eyebrow">The Player's Box</p>
     <h1>When can we film?</h1>
-    <p class="lede">Work down the steps: who you are, your time zone, the week, then the hours you could record.</p>
-    <div class="baseline" aria-hidden="true"></div>
+    <label class="lab" for="gateInput">Enter the password to continue</label>
+    <input id="gateInput" type="password" inputmode="text" autocapitalize="off" autocorrect="off" spellcheck="false" autocomplete="off" aria-describedby="gateErr">
+    <p class="err" id="gateErr" aria-live="polite"></p>
+    <button type="submit" class="primary"><span class="lbl">Enter</span></button>
+  </form>
+</div>
+
+<div class="wrap" id="app" hidden>
+  <header class="hero">
+    <div class="hero-text">
+      <p class="eyebrow">The Player's Box</p>
+      <h1>When can we film?</h1>
+      <p class="lede">Pick your details, select your available hours, and submit. It's that simple.</p>
+    </div>
+    <svg class="chair" viewBox="0 0 250 170" aria-hidden="true">
+      <g stroke="#3A2A1C" stroke-width="7" stroke-linecap="round" fill="none">
+        <path d="M52 26v118M198 14v118"/>
+        <path d="M40 92l174-16"/>
+        <path d="M60 150l132-44M70 104l118 52"/>
+      </g>
+      <circle cx="52" cy="22" r="7" fill="#4A3524"/><circle cx="198" cy="10" r="7" fill="#4A3524"/>
+      <path d="M52 34l146-13v46L52 80z" fill="#0A0E16" stroke="#232B3B" stroke-width="2"/>
+      <path d="M52 100l146-14v12L52 112z" fill="#0A0E16" stroke="#232B3B" stroke-width="2"/>
+      <g fill="#F4F6FA" font-family="'Fira Sans Condensed','Arial Narrow',Arial,sans-serif" font-weight="700" font-style="italic" text-anchor="middle" transform="rotate(-5.100 125 52)">
+        <text x="125" y="46" font-size="15">THE</text>
+        <text x="125" y="68" font-size="21" textLength="118" lengthAdjust="spacingAndGlyphs">PLAYER'S BOX</text>
+      </g>
+    </svg>
   </header>
+
+  <ol class="stepper" id="stepper" aria-label="Progress">
+    <li class="st" data-step="1"><span class="dot">1</span><span class="lab">Details</span></li>
+    <li class="rail" aria-hidden="true"></li>
+    <li class="st" data-step="2"><span class="dot">2</span><span class="lab">Select Hours</span></li>
+    <li class="rail" aria-hidden="true"></li>
+    <li class="st" data-step="3"><span class="dot">3</span><span class="lab">Review &amp; Submit</span></li>
+  </ol>
 
   <div class="notice" id="notice" hidden></div>
 
-  <section class="step" id="step1">
-    <div class="sh"><span class="num" aria-hidden="true">1</span><h2 id="whoLabel">Who are you?</h2></div>
-    <div class="who" id="who" role="group" aria-labelledby="whoLabel"></div>
+  <div class="row3">
+    <section class="card">
+      <h2 id="whoLabel"><svg class="ic"><use href="#i-person"/></svg>Who are you?</h2>
+      <div class="who" id="who" role="group" aria-labelledby="whoLabel"></div>
+    </section>
+    <section class="card">
+      <h2 id="zoneLabel"><svg class="ic"><use href="#i-globe"/></svg>Your Time Zone</h2>
+      <select id="zone" aria-labelledby="zoneLabel"></select>
+    </section>
+    <section class="card">
+      <h2 id="weekLabel"><svg class="ic"><use href="#i-cal"/></svg>Which Week?</h2>
+      <div class="weekpick">
+        <button type="button" id="weekPrev" aria-label="Earlier week"><svg><use href="#i-left"/></svg></button>
+        <select id="weekSel" aria-labelledby="weekLabel"></select>
+        <button type="button" id="weekNext" aria-label="Later week"><svg><use href="#i-right"/></svg></button>
+      </div>
+      <p class="hint" id="weekHint"></p>
+    </section>
+  </div>
+
+  <div class="locked" id="locked" hidden>
+    <div>
+      <div class="k">Filming locked in</div>
+      <div class="v" id="lockedWhen"></div>
+      <div class="s" id="lockedSub"></div>
+    </div>
+    <button type="button" id="unlockBtn">Clear</button>
+  </div>
+
+  <section class="card bestband">
+    <div class="bhead">
+      <h2><svg class="ic"><use href="#i-clock"/></svg><span id="bestLabel">Best Windows</span></h2>
+      <p class="hint">Where the most of you overlap. Tap one to see who's in and lock the filming time.</p>
+    </div>
+    <div class="best" id="best"></div>
+    <div class="pick" id="pickBox" hidden>
+      <p id="pickText"></p>
+      <button type="button" class="primary" id="lockBtn2"><span class="lbl">Lock it in</span></button>
+    </div>
   </section>
 
-  <section class="step" id="step2">
-    <div class="sh"><span class="num" aria-hidden="true">2</span><h2 id="zoneLabel">Your time zone</h2></div>
-    <select id="zone" aria-labelledby="zoneLabel"></select>
-    <p class="hint">Every time on this page shows in this zone. Change it whenever you travel.</p>
-  </section>
+  <div class="main">
+    <section class="card quick" id="quick">
+      <div class="qhead">
+        <h2 id="quickLabel"><svg class="ic"><use href="#i-clock"/></svg>Quick Add</h2>
+        <div class="qsets" role="group" aria-label="Day shortcuts">
+          <button type="button" data-set="weekdays">Weekdays</button>
+          <button type="button" data-set="weekend">Weekend</button>
+          <button type="button" data-set="all">All 7</button>
+        </div>
+      </div>
+      <p class="hint">Add the same hours to several days at once.</p>
+      <div class="qdays" id="qDays" role="group" aria-labelledby="quickLabel"></div>
+      <div class="qtimes">
+        <label for="qFrom">From<select id="qFrom"></select></label>
+        <label for="qUntil">Until<select id="qUntil"></select></label>
+      </div>
+      <div class="qacts">
+        <button type="button" class="go" id="qAdd">Add to 5 days</button>
+        <button type="button" class="undo" id="qRemove">Remove these hours</button>
+      </div>
+      <p class="qmsg" id="qMsg" aria-live="polite"></p>
+    </section>
 
-  <section class="step" id="step3">
-    <div class="sh"><span class="num" aria-hidden="true">3</span><h2 id="weekLabel">Which week?</h2></div>
-    <div class="weeks" id="weeks" role="group" aria-labelledby="weekLabel"></div>
-    <div class="progress">
-      <div class="ptop">
+    <section class="card gridcard">
+      <div class="gridhead">
+        <h2 id="gridLabel"><svg class="ic"><use href="#i-cal"/></svg><span id="gridTitle">Pick Your Hours</span></h2>
+      </div>
+
+      <div class="pane" id="mine">
+        <p class="hint" id="gridHint"></p>
+        <div class="legend" data-legend></div>
+        <div class="sheet" id="myGrid" role="group" aria-labelledby="gridLabel"></div>
+        <button type="button" class="linkbtn" data-early>Show 12 am to 7 am</button>
+      </div>
+
+    </section>
+
+    <aside class="side">
+      <section class="card" id="selCard">
+        <h2><svg class="ic"><use href="#i-check"/></svg>Your Selection</h2>
+        <ul class="facts">
+          <li><svg class="ic"><use href="#i-person"/></svg><span id="fName"></span></li>
+          <li><svg class="ic"><use href="#i-globe"/></svg><span id="fZone"></span></li>
+          <li><svg class="ic"><use href="#i-cal"/></svg><span id="fWeek"></span></li>
+          <li><svg class="ic"><use href="#i-clock"/></svg><span id="fHours"></span></li>
+        </ul>
+        <hr class="rule">
+        <h3>Selected Times</h3>
+        <div class="times" id="times"></div>
+        <p class="status" id="selStatus"></p>
+        <button type="button" class="primary" id="submitBtn2" disabled><svg><use href="#i-send"/></svg><span class="lbl">Submit Times</span></button>
+      </section>
+
+      <section class="card">
+        <h2><svg class="ic"><use href="#i-person"/></svg>Who's Submitted</h2>
         <div class="pcount" id="pCount">0 of 4 submitted</div>
-        <div class="pnote" id="pNote"></div>
-      </div>
-      <div class="pbar" id="pBar" role="img"></div>
-    </div>
-    <div class="locked" id="locked" hidden>
-      <div>
-        <div class="k">Filming locked in</div>
-        <div class="v" id="lockedWhen"></div>
-        <div class="s" id="lockedSub"></div>
-      </div>
-      <button type="button" id="unlockBtn">Clear</button>
-    </div>
-  </section>
-
-  <section class="step" id="step4">
-    <div class="sh"><span class="num" aria-hidden="true">4</span><h2 id="gridLabel">Pick your hours</h2></div>
-    <div class="tabs" role="tablist" aria-label="Whose hours">
-      <button type="button" role="tab" id="tabMine" aria-controls="mine" aria-selected="true">My hours</button>
-      <button type="button" role="tab" id="tabGroup" aria-controls="group" aria-selected="false">Everyone</button>
-    </div>
-
-    <div class="block" id="mine" role="tabpanel" aria-labelledby="tabMine">
-      <p class="hint" id="gridHint"></p>
-      <p class="hint" id="othersHint"></p>
-      <div class="legend" data-legend></div>
-      <div class="sheet" id="myGrid" role="group" aria-labelledby="gridLabel"></div>
-      <button type="button" class="linkbtn" data-early>Show 12am to 7am</button>
-    </div>
-
-    <div class="block" id="group" role="tabpanel" aria-labelledby="tabGroup" hidden>
-      <h3 id="bestLabel">Best windows</h3>
-      <div class="best" id="best"></div>
-      <h3 id="allLabel">Every hour</h3>
-      <p class="hint">Each box has a corner per person, filled in when she's free. Tap an hour to see who's in.</p>
-      <div class="legend" data-legend></div>
-      <div class="sheet" id="groupGrid" role="group" aria-labelledby="allLabel"></div>
-      <button type="button" class="linkbtn" data-early>Show 12am to 7am</button>
-      <div class="block" id="notesBlock" hidden>
-        <h3>Notes</h3>
-        <div class="notes" id="notes"></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="step" id="step5">
-    <div class="sh"><span class="num" aria-hidden="true">5</span><h2><label for="note">Add a note</label></h2><span class="opt">Optional</span></div>
-    <textarea id="note" maxlength="500" placeholder="Travel days, match days, a hard stop, where you'll be"></textarea>
-    <p class="hint">Then tap Submit in the bar at the bottom of the screen.</p>
-  </section>
+        <div class="pbar4" id="pBar" role="img"></div>
+        <div class="plist" id="pList"></div>
+      </section>
+    </aside>
+  </div>
 
   <div class="bar" id="myBar">
     <div class="t" id="myBarText"></div>
-    <button type="button" class="primary" id="submitBtn" disabled>Submit times</button>
-  </div>
-  <div class="bar" id="groupBar" hidden>
-    <div class="t" id="groupBarText"></div>
-    <button type="button" class="primary" id="lockBtn">Lock it in</button>
+    <button type="button" class="primary" id="submitBtn" disabled><span class="lbl">Submit Times</span></button>
   </div>
 </div>
 
@@ -638,7 +626,7 @@ textarea::placeholder { color: var(--muted); }
   // 16 -> "4pm", 12 -> "12pm", 0 -> "12am"
   function clock(h, mi) {
     h = ((h % 24) + 24) % 24;
-    return (h % 12 || 12) + (mi ? ":" + pad(mi) : "") + (h < 12 ? "am" : "pm");
+    return (h % 12 || 12) + (mi ? ":" + pad(mi) : "") + (h < 12 ? " am" : " pm");
   }
 
   // ---------- The chosen time zone ----------
@@ -667,7 +655,7 @@ textarea::placeholder { color: var(--muted); }
   function shortClockOf(key) { return clockOf(key).replace("m", ""); }
   function rangeOf(a, b) {
     var x = clockOf(a), y = clockOf(b);
-    if (x.slice(-2) === y.slice(-2)) x = x.slice(0, -2);
+    if (x.slice(-2) === y.slice(-2)) x = x.slice(0, -3);
     return x + "–" + y;
   }
   function dayOf(key) { var d = dayBits(at(key).date); return d.wd + " " + d.mo + " " + d.dn; }
@@ -688,7 +676,8 @@ textarea::placeholder { color: var(--muted); }
         days: days,
         from: keyAt(days[0], 0),
         to: keyAt(addDays(days[6], 1), 0),
-        range: a.mo + " " + a.dn + "–" + (a.mo === b.mo ? "" : b.mo + " ") + b.dn
+        range: a.mo + " " + a.dn + "–" + (a.mo === b.mo ? "" : b.mo + " ") + b.dn,
+        long: a.mo + " " + a.dn + " – " + (a.mo === b.mo ? "" : b.mo + " ") + b.dn + ", " + days[6].slice(0, 4)
       };
     });
   }
@@ -698,7 +687,6 @@ textarea::placeholder { color: var(--muted); }
 
   // ---------- State ----------
   var state = {
-    view: "mine",
     me: null,
     week: (WEEKS.filter(function (w) { return !isPast(w.to - 1); })[0] || WEEKS[0]).id,
     avail: {},            // weekId -> hostId -> { slots:Set, note, tz, updatedAt }
@@ -706,6 +694,9 @@ textarea::placeholder { color: var(--muted); }
     locks: [],            // [{ id, key }]
     drafts: {},           // weekId -> { slots:Set, note, dirty } for the picked name
     early: false,         // show 12am to 7am rows
+    quickDays: [true, true, true, true, true, false, false], // Mon..Sun chosen in Quick add
+    quickFrom: 16,
+    quickUntil: 22,
     saving: false,
     selected: null,
     canWrite: null,       // true | false | null (not told)
@@ -775,9 +766,7 @@ textarea::placeholder { color: var(--muted); }
     if (!state.drafts[weekId]) state.drafts[weekId] = fromSaved(weekId);
     return state.drafts[weekId];
   }
-  function showNote(force) {
-    if (force || document.activeElement !== noteEl) noteEl.value = draft().note;
-  }
+  function showNote() {}   // the note field was removed; saved notes are simply left alone
 
   // ---------- Rows: which hours of the day the sheets show ----------
   function hourOf(key) { return at(key).h; }
@@ -799,16 +788,30 @@ textarea::placeholder { color: var(--muted); }
     Array.prototype.forEach.call(document.querySelectorAll("[data-early]"), function (b) {
       b.disabled = forced;
       b.textContent = forced ? "Showing all 24 hours because someone picked an early one"
-        : (state.early ? "Hide 12am to 7am" : "Show 12am to 7am");
+        : (state.early ? "Hide 12 am to 7 am" : "Show 12 am to 7 am");
     });
   }
 
-  // ---------- Render: zone, weeks, progress ----------
+  // ---------- Small builders ----------
+  var SVG_NS = "http://www.w3.org/2000/svg";
+  function icon(id, cls) {
+    var s = document.createElementNS(SVG_NS, "svg");
+    if (cls) s.setAttribute("class", cls);
+    var u = document.createElementNS(SVG_NS, "use");
+    u.setAttribute("href", "#" + id);
+    s.append(u);
+    return s;
+  }
+  function zoneLabel(tz) {
+    for (var i = 0; i < ZONES.length; i++) if (ZONES[i].tz === tz) return ZONES[i].label;
+    return zoneShort(tz);
+  }
+
+  // ---------- Render: details row ----------
   function renderZone() {
     zoneEl.textContent = "";
-    var now = Date.now();
     ZONES.forEach(function (z) {
-      var p = tzParts(now, z.tz), o = el("option", null, z.label + "  (" + clock(p.h, p.mi || 0).replace(/(am|pm)$/, " $1") + " now)");
+      var o = el("option", null, z.label);
       o.value = z.tz;
       if (z.tz === zone) o.selected = true;
       zoneEl.append(o);
@@ -826,69 +829,74 @@ textarea::placeholder { color: var(--muted); }
     });
   }
 
-  function renderWeeks() {
-    var box = $("weeks");
-    box.textContent = "";
-    WEEKS.forEach(function (w) {
+  function renderWho() {
+    var who = $("who");
+    who.textContent = "";
+    HOSTS.forEach(function (h) {
       var b = el("button");
       b.type = "button";
-      b.dataset.week = w.id;
-      b.setAttribute("aria-pressed", String(state.week === w.id));
-      b.append(el("span", "wl", w.label), el("span", "wr", w.range));
-      var d = state.drafts[w.id], lock = lockIn(w), n = submittedCount(w.id);
-      if (d && d.dirty) b.append(el("span", "ws unsent", "Not sent yet"));
-      else if (lock) b.append(el("span", "ws", "Locked " + dayBits(at(lock.key).date).wd + " " + shortClockOf(lock.key)));
-      else b.append(el("span", "ws", n + " of " + HOSTS.length + " in"));
-      box.append(b);
+      b.dataset.host = h.id;
+      b.setAttribute("aria-pressed", String(state.me === h.id));
+      b.append(icon("i-check"), el("span", null, h.name));
+      who.append(b);
     });
   }
 
+  function renderWeeks() {
+    var sel = $("weekSel"), sig = WEEKS.map(function (w) { return w.id; }).join(",");
+    if (sel.dataset.sig !== sig) {
+      sel.textContent = "";
+      WEEKS.forEach(function (w) {
+        var o = el("option", null, w.long);
+        o.value = w.id;
+        sel.append(o);
+      });
+      sel.dataset.sig = sig;
+    }
+    if (sel.value !== state.week) sel.value = state.week;
+    var idx = 0;
+    WEEKS.forEach(function (w, i) { if (w.id === state.week) idx = i; });
+    $("weekPrev").disabled = idx <= 0;
+    $("weekNext").disabled = idx >= WEEKS.length - 1;
+    var w = WEEKS[idx], d = state.drafts[w.id], lock = lockIn(w), n = submittedCount(w.id);
+    var tail = d && d.dirty ? "your hours aren't sent yet"
+      : lock ? "filming locked " + dayBits(at(lock.key).date).wd + " " + clockOf(lock.key)
+      : n + " of " + HOSTS.length + " submitted";
+    $("weekHint").textContent = w.label + " · " + tail;
+  }
+
+  // ---------- Render: who has submitted ----------
   function renderProgress() {
-    var bar = $("pBar"), week = weekById(state.week);
+    var bar = $("pBar"), listEl = $("pList"), week = weekById(state.week);
     bar.textContent = "";
+    listEl.textContent = "";
     var done = 0, waiting = [];
     HOSTS.forEach(function (h) {
       var cur = submitted(state.week, h.id);
-      var seg = el("div", "pseg" + (cur ? " in" : ""));
-      seg.append(el("div", "track"), el("b", null, h.name));
+      bar.append(el("i", cur ? "in" : null));
+      var row = el("div", "prow"), left = el("span");
+      left.append(el("b", null, h.name));
       if (cur) {
         done++;
         var a = entry(state.week, h.id), n = a.slots.size;
-        seg.append(el("span", null, n === 0 ? "Out" : n + (n === 1 ? " hr" : " hrs")));
-        if (a.tz) seg.append(el("span", "where", zoneShort(a.tz)));
+        left.append(el("span", "sub", (n === 0 ? "Out this week" : n + (n === 1 ? " hr" : " hrs")) + (a.tz ? " · " + zoneShort(a.tz) : "")));
+        row.append(left, el("span", "pill in", "Submitted"));
       } else {
         waiting.push(h.name);
-        seg.append(el("span", null, "Waiting"));
+        row.append(left, el("span", "pill", "Waiting"));
       }
-      bar.append(seg);
+      listEl.append(row);
     });
-    $("pCount").textContent = done + " of " + HOSTS.length + " submitted";
-    $("pNote").textContent = state.dbState === "connecting" ? "Loading…" : week.range;
+    $("pCount").textContent = state.dbState === "connecting"
+      ? "Loading…"
+      : done + " of " + HOSTS.length + " submitted for " + week.range;
     bar.setAttribute("aria-label", done + " of " + HOSTS.length + " submitted for " + week.range + "." +
       (waiting.length ? " Waiting on " + list(waiting) + "." : ""));
   }
 
   // ---------- Render: sheets ----------
-  // Four corners per hour, one per host in a fixed position. `ids` are the hosts free that hour;
-  // on your own sheet your corner follows what you've tapped and is drawn in yellow.
-  function fillQuads(btn, ids, meId, mePicked) {
-    btn.textContent = "";
-    var count = 0;
-    HOSTS.forEach(function (h) {
-      var mine = h.id === meId;
-      var on = mine ? mePicked : ids.indexOf(h.id) >= 0;
-      if (on) count++;
-      btn.append(el("i", "q" + (on ? " on" : "") + (on && mine ? " me" : ""), on ? h.ini : ""));
-    });
-    btn.classList.toggle("full", count === HOSTS.length);
-  }
-  function paintMine(btn) {
-    var key = +btn.dataset.slot;
-    var others = btn.dataset.others ? btn.dataset.others.split(",") : [];
-    fillQuads(btn, others, state.me, !!state.me && draft().slots.has(key));
-  }
   function sheetHead(grid, week, asButtons) {
-    grid.append(el("div", "tm head"));
+    grid.append(el("div"));
     week.days.forEach(function (dateStr) {
       var d = dayBits(dateStr);
       var gone = isPast(keyAt(addDays(dateStr, 1), 0) - 1);
@@ -898,74 +906,161 @@ textarea::placeholder { color: var(--muted); }
         n.dataset.day = dateStr;
         n.setAttribute("aria-label", "Toggle all of " + d.wd + " " + d.mo + " " + d.dn);
       }
-      n.append(el("span", "wd", dateStr === TODAY ? "Today" : d.wd), el("span", "dn", String(d.dn)));
+      var date = el("span");
+      date.append(el("i", null, d.mo + " "), String(d.dn));
+      n.append(el("b", null, d.wd), date);
       grid.append(n);
     });
   }
   function timeCell(week, h) {
-    var t = el("div", "tm");
-    t.append(el("span", null, shortClockOf(keyAt(week.days[0], h))));
-    return t;
+    var label = clockOf(keyAt(week.days[0], h));
+    var b = el("button", "tm", label);
+    b.type = "button";
+    b.dataset.hour = String(h);
+    b.setAttribute("aria-label", "Toggle " + label + " on every day");
+    return b;
   }
 
-  function renderWho() {
-    var who = $("who");
-    who.textContent = "";
+  // Four corners per hour, one per host in a fixed position. `others` are the other hosts free
+  // that hour; your own corner follows what you've tapped, sent or not, and is drawn in green.
+  function paint(btn) {
+    var key = +btn.dataset.slot;
+    var ids = btn.dataset.others ? btn.dataset.others.split(",") : [];
+    var mine = !!state.me && draft().slots.has(key), count = 0;
+    btn.textContent = "";
     HOSTS.forEach(function (h) {
-      var b = el("button", null, h.name);
-      b.type = "button";
-      b.dataset.host = h.id;
-      b.setAttribute("aria-pressed", String(state.me === h.id));
-      who.append(b);
+      var me = h.id === state.me;
+      var on = me ? mine : ids.indexOf(h.id) >= 0;
+      if (on) count++;
+      btn.append(el("i", "q" + (on ? " on" : "") + (on && me ? " me" : ""), on ? h.ini : ""));
     });
+    btn.setAttribute("aria-pressed", String(mine));
+    btn.classList.toggle("full", count === HOSTS.length);
   }
 
   function renderMyGrid() {
     var grid = $("myGrid"), week = weekById(state.week), d = draft();
-    var others = HOSTS.filter(function (x) { return x.id !== state.me; });
-    var othersIn = others.filter(function (x) { return submitted(state.week, x.id); });
+    var lock = lockIn(week);
     grid.textContent = "";
     grid.className = "sheet" + (state.me ? "" : " off");
-    $("step1").classList.toggle("next", !state.me);
-    $("step4").classList.toggle("wait", !state.me && state.view === "mine");
-    $("step5").classList.toggle("wait", !state.me);
     sheetHead(grid, week, true);
     rowsFor(week).forEach(function (h) {
       grid.append(timeCell(week, h));
       week.days.forEach(function (dateStr) {
         var key = keyAt(dateStr, h);
         var free = whoHas(key).filter(function (id) { return id !== state.me; });
-        var btn = el("button", "hr");
+        var btn = el("button", "hr" + (state.selected === key ? " sel" : "") + (lock && lock.key === key ? " lock" : ""));
         btn.type = "button";
         btn.dataset.slot = String(key);
         btn.dataset.date = dateStr;
-        btn.setAttribute("aria-pressed", String(d.slots.has(key)));
-        btn.setAttribute("aria-label", dayOf(key) + ", " + rangeOf(key, key + 1) +
-          (free.length ? ". Already free: " + list(free.map(hostName)) : ""));
+        btn.dataset.hour = String(h);
         btn.dataset.others = free.join(",");
-        paintMine(btn);
+        btn.setAttribute("aria-label", dayOf(key) + ", " + rangeOf(key, key + 1) +
+          (free.length ? ". Free: " + list(free.map(hostName)) : ""));
+        paint(btn);
         if (isPast(key)) btn.disabled = true;
         grid.append(btn);
       });
     });
     $("gridHint").textContent = !state.me
-      ? "Do step 1 first: pick your name."
-      : "Showing " + week.range + " in " + zoneShort(zone) + " time. Each box is one hour. Tap a date to select or clear the whole day.";
-    $("othersHint").textContent = othersIn.length
-      ? "Blue corners are hours the others already picked. Your corner turns yellow when you pick one."
-      : "Nobody else has submitted for this week yet. Your corner turns yellow when you pick an hour.";
+      ? "Pick your name first, then tap the hours you're free. Blue corners show who's already free."
+      : "Tap the hours you're free, or use Quick Add for several days at once. Tap a day or a time to fill a whole column or row. Blue corners are the others, green is you.";
     renderEarlyButtons();
   }
 
-  function renderMyBar() {
-    var t = $("myBarText"), btn = $("submitBtn");
-    t.textContent = "";
+  // ---------- Quick add: the same hours on several days ----------
+  function quickDates(week) {
+    // the chosen days of this week that still have time left in them
+    return week.days.filter(function (dateStr, i) {
+      return state.quickDays[i] && !isPast(keyAt(addDays(dateStr, 1), 0) - 1);
+    });
+  }
+  function quickKeys(week) {
+    var keys = [];
+    quickDates(week).forEach(function (dateStr) {
+      for (var h = state.quickFrom; h < state.quickUntil; h++) {
+        var k = keyAt(dateStr, h);
+        if (!isPast(k)) keys.push(k);
+      }
+    });
+    return keys;
+  }
+  function renderQuick() {
+    var week = weekById(state.week), box = $("qDays");
+    $("quick").classList.toggle("off", !state.me);
+    box.textContent = "";
+    week.days.forEach(function (dateStr, i) {
+      var d = dayBits(dateStr), b = el("button", null, d.wd);
+      b.type = "button";
+      b.dataset.i = String(i);
+      b.setAttribute("aria-pressed", String(!!state.quickDays[i]));
+      b.setAttribute("aria-label", d.wd + " " + d.mo + " " + d.dn);
+      if (isPast(keyAt(addDays(dateStr, 1), 0) - 1)) b.disabled = true;
+      box.append(b);
+    });
+    // Hour menus, labelled in the chosen zone; rebuilt only when the zone or week changes
+    var from = $("qFrom"), until = $("qUntil"), sig = zone + "|" + week.id;
+    if (from.dataset.sig !== sig) {
+      from.textContent = ""; until.textContent = "";
+      for (var h = 0; h <= 24; h++) {
+        var label = h === 24 ? clockOf(keyAt(addDays(week.days[0], 1), 0)) + " (midnight)" : clockOf(keyAt(week.days[0], h));
+        if (h < 24) { var a = el("option", null, label); a.value = String(h); from.append(a); }
+        if (h > 0) { var u = el("option", null, label); u.value = String(h); until.append(u); }
+      }
+      from.dataset.sig = sig;
+    }
+    from.value = String(state.quickFrom);
+    until.value = String(state.quickUntil);
+    var n = quickDates(week).length, any = quickKeys(week).length > 0;
+    $("qAdd").textContent = n === 0 ? "Pick at least one day" : "Add to " + n + (n === 1 ? " day" : " days");
+    $("qAdd").disabled = !state.me || state.saving || !any;
+    $("qRemove").disabled = !state.me || state.saving || !any;
+  }
+  function quickApply(add) {
+    if (!state.me || state.saving) return;
+    var week = weekById(state.week), d = draft(), keys = quickKeys(week), changed = 0;
+    keys.forEach(function (k) {
+      if (add && !d.slots.has(k)) { d.slots.add(k); changed++; }
+      if (!add && d.slots.has(k)) { d.slots.delete(k); changed++; }
+    });
+    if (changed) d.dirty = true;
+    var days = quickDates(week).length;
+    $("qMsg").textContent = changed === 0
+      ? (add ? "Those hours were already picked." : "None of those hours were picked.")
+      : (add ? "Added " : "Removed ") + hoursText(changed) + " across " + days + (days === 1 ? " day" : " days") + ". Remember to submit.";
+    renderMyGrid(); renderWeeks(); renderSelection();
+  }
+
+  // ---------- Render: your selection, submit button, stepper ----------
+  function renderSelection() {
     var d = draft(), n = d.slots.size, week = weekById(state.week);
     var mine = state.me ? entry(state.week, state.me) : null;
     var done = !!(mine && mine.updatedAt);
+
+    $("fName").textContent = state.me ? hostName(state.me) : "Pick your name";
+    $("fZone").textContent = zoneLabel(zone);
+    $("fWeek").textContent = week.long;
+    $("fHours").textContent = hoursText(n) + " selected";
+
+    var times = $("times");
+    times.textContent = "";
+    var keys = Array.from(d.slots).sort(function (a, b) { return a - b; }), byDay = {}, order = [];
+    keys.forEach(function (k) {
+      var date = at(k).date;
+      if (!byDay[date]) { byDay[date] = []; order.push(date); }
+      byDay[date].push(k);
+    });
+    if (!order.length) times.append(el("p", "hint", state.me ? "No hours picked yet." : "Your picked hours will show here."));
+    order.forEach(function (date) {
+      var b = dayBits(date), row = el("div", "day"), chips = el("div", "chips");
+      byDay[date].forEach(function (k) { chips.append(el("span", "chip", clockOf(k))); });
+      row.append(el("div", "dl", b.wd + ", " + b.mo + " " + b.dn), chips);
+      times.append(row);
+    });
+
     var head, sub;
     if (!state.me) {
-      head = "Start at step 1"; sub = "Pick your name, then your hours.";
+      head = "Start with your name"; sub = "Then pick your hours.";
     } else if (state.saving) {
       head = "Saving…"; sub = "";
     } else if (d.dirty) {
@@ -978,13 +1073,31 @@ textarea::placeholder { color: var(--muted); }
       head = "Nothing sent for " + week.range;
       sub = "Pick hours, or submit with none if you're out.";
     }
-    t.append(el("strong", null, head));
-    if (sub) t.append(sub);
-    btn.disabled = !state.me || state.saving || !writable() || (!d.dirty && done);
-    btn.textContent = state.saving ? "Saving…" : (!d.dirty && done ? "Submitted" : (done ? "Update times" : "Submit times"));
+    var t = $("myBarText"), st = $("selStatus");
+    t.textContent = ""; st.textContent = "";
+    t.append(el("strong", null, head)); if (sub) t.append(sub);
+    st.append(el("strong", null, head + (sub ? ". " : "")), sub);
+
+    var disabled = !state.me || state.saving || !writable() || (!d.dirty && done);
+    var label = state.saving ? "Saving…" : (!d.dirty && done ? "Submitted" : (done ? "Update Times" : "Submit Times"));
+    [$("submitBtn"), $("submitBtn2")].forEach(function (b) {
+      b.disabled = disabled;
+      b.querySelector(".lbl").textContent = label;
+    });
+
+    // Stepper: 1 name picked, 2 hours picked, 3 sent
+    var s1 = !!state.me, s2 = s1 && (n > 0 || done), s3 = s1 && done && !d.dirty;
+    var flags = [s1, s2, s3], current = !s1 ? 1 : !s2 ? 2 : 3;
+    Array.prototype.forEach.call($("stepper").children, function (li, i) {
+      if (li.classList.contains("rail")) { li.classList.toggle("fill", flags[(i - 1) / 2]); return; }
+      var step = +li.dataset.step;
+      li.classList.toggle("done", flags[step - 1]);
+      li.classList.toggle("current", !flags[step - 1] && step === current);
+      li.querySelector(".dot").textContent = flags[step - 1] ? "✓" : String(step);
+    });
   }
 
-  // ---------- Render: group ----------
+  // ---------- Render: everyone ----------
   // Back-to-back hours with the same people free, as one window.
   function windows(week) {
     var runs = [], cur = null;
@@ -1004,93 +1117,54 @@ textarea::placeholder { color: var(--muted); }
     var runs = windows(week);
     var max = runs.reduce(function (m, r) { return Math.max(m, r.ids.length); }, 0);
     var subs = submittedCount(state.week);
+    $("bestLabel").textContent = max === HOSTS.length ? "Everyone's Free" : "Best Windows";
     if (max === 0) {
       best.append(el("div", "empty", state.dbState === "connecting"
         ? "Loading everyone's times…"
         : "No times in yet for " + week.range + ". Windows show up here as people submit."));
-      $("bestLabel").textContent = "Best windows";
       return;
     }
     if (max < 2) {
-      $("bestLabel").textContent = "Best windows";
       best.append(el("div", "empty", "No overlap yet. " + subs + " of " + HOSTS.length + " have submitted for " + week.range + "."));
       return;
     }
-    var top = runs.filter(function (r) { return r.ids.length === max; });
-    $("bestLabel").textContent = max === HOSTS.length ? "Everyone's free" : "Closest so far: " + max + " of " + HOSTS.length;
-    top.slice(0, 6).forEach(function (r) {
-      var btn = el("button", max === HOSTS.length ? "full" : null);
+    var top = runs.filter(function (r) { return r.ids.length >= 2; })
+      .sort(function (x, y) { return y.ids.length - x.ids.length || x.start - y.start; });
+    top.slice(0, 4).forEach(function (r) {
+      var all = r.ids.length === HOSTS.length;
+      var picked = state.selected != null && state.selected >= r.start && state.selected < r.end;
+      var btn = el("button", (all ? "full" : "") + (picked ? " on" : ""));
       btn.type = "button";
       btn.dataset.pick = String(r.start);
       var left = el("div");
       left.append(el("div", "a", dayOf(r.start) + " · " + rangeOf(r.start, r.end)));
       var missing = HOSTS.filter(function (h) { return r.ids.indexOf(h.id) < 0; }).map(function (h) { return h.name; });
-      var sub = hoursText(r.end - r.start) + " · " + zoneShort(zone) + " time";
-      if (missing.length) sub += " · without " + list(missing);
-      left.append(el("div", "b", sub));
+      left.append(el("div", "b", hoursText(r.end - r.start) + (missing.length ? " · without " + list(missing) : " · all four")));
       btn.append(left, el("div", "c", r.ids.length + "/" + HOSTS.length));
       best.append(btn);
     });
-    if (top.length > 6) best.append(el("p", "hint", (top.length - 6) + " more at this count in the grid below."));
+    if (top.length > 4) best.append(el("p", "hint", "More overlaps show on the calendar."));
   }
 
-  function renderGroupGrid() {
-    var grid = $("groupGrid"), week = weekById(state.week), lock = lockIn(week);
-    grid.textContent = "";
-    sheetHead(grid, week, false);
-    rowsFor(week).forEach(function (h) {
-      grid.append(timeCell(week, h));
-      week.days.forEach(function (dateStr) {
-        var key = keyAt(dateStr, h), ids = whoHas(key);
-        var cls = "cell";
-        if (isPast(key)) cls += " past";
-        if (state.selected === key) cls += " sel";
-        if (lock && lock.key === key) cls += " lock";
-        var btn = el("button", cls);
-        btn.type = "button";
-        btn.dataset.pick = String(key);
-        btn.setAttribute("aria-label", dayOf(key) + ", " + rangeOf(key, key + 1) + ": " + ids.length + " of " + HOSTS.length + " free");
-        fillQuads(btn, ids, null, false);
-        grid.append(btn);
-      });
-    });
-    renderEarlyButtons();
-  }
-
-  function renderNotes() {
-    var box = $("notes");
-    box.textContent = "";
-    var any = false;
-    HOSTS.forEach(function (h) {
-      var a = entry(state.week, h.id);
-      if (a && a.updatedAt && a.note) {
-        any = true;
-        var n = el("div");
-        n.append(el("b", null, h.name + (a.tz ? " · " + zoneShort(a.tz) : "")), a.note);
-        box.append(n);
-      }
-    });
-    $("notesBlock").hidden = !any;
-  }
-
-  function renderGroupBar() {
-    var bar = $("groupBar"), t = $("groupBarText"), week = weekById(state.week);
-    if (state.view !== "group" || state.selected == null) { bar.hidden = true; return; }
-    bar.hidden = false;
+  // The window tapped under Best Windows: who's in, and the lock button.
+  function renderPick() {
+    var box = $("pickBox"), week = weekById(state.week);
+    if (state.selected == null) { box.hidden = true; return; }
+    box.hidden = false;
     var key = state.selected, ids = whoHas(key);
     var inNames = ids.map(hostName);
     var waiting = HOSTS.filter(function (h) { return ids.indexOf(h.id) < 0 && !submitted(state.week, h.id); }).map(function (h) { return h.name; });
     var outNames = HOSTS.filter(function (h) { return ids.indexOf(h.id) < 0 && waiting.indexOf(h.name) < 0; }).map(function (h) { return h.name; });
-    t.textContent = "";
-    t.append(el("strong", null, dayOf(key) + " · " + rangeOf(key, key + 1)));
     var bits = [];
     bits.push(inNames.length ? "In: " + list(inNames) : "Nobody in yet");
     if (outNames.length) bits.push("Out: " + list(outNames));
     if (waiting.length) bits.push("Waiting: " + list(waiting));
-    t.append(bits.join(" · "));
-    var lock = lockIn(week), isLocked = !!lock && lock.key === key;
-    $("lockBtn").textContent = isLocked ? "Locked" : "Start at " + clockOf(key);
-    $("lockBtn").disabled = isLocked || !writable() || state.saving;
+    var t = $("pickText");
+    t.textContent = "";
+    t.append(el("strong", null, dayOf(key) + " · starts " + clockOf(key)), bits.join(" · "));
+    var lock = lockIn(week), isLocked = !!lock && lock.key === key, b = $("lockBtn2");
+    b.querySelector(".lbl").textContent = isLocked ? "Locked" : "Lock " + clockOf(key) + " start";
+    b.disabled = isLocked || !writable() || state.saving;
   }
 
   function renderLocked() {
@@ -1114,24 +1188,11 @@ textarea::placeholder { color: var(--muted); }
     n.textContent = msg;
   }
 
-  function renderView() {
-    var mine = state.view === "mine";
-    $("mine").hidden = !mine;
-    $("group").hidden = mine;
-    $("tabMine").setAttribute("aria-selected", String(mine));
-    $("tabGroup").setAttribute("aria-selected", String(!mine));
-    $("gridLabel").textContent = mine ? "Pick your hours" : "Everyone's hours";
-    $("step5").hidden = !mine;
-    $("myBar").hidden = !mine;
-    $("step4").classList.toggle("wait", !state.me && mine);
-    renderGroupBar();
-  }
-
   function renderShared() {
-    renderNotice(); renderWeeks(); renderProgress(); renderLocked(); renderBest(); renderGroupGrid(); renderNotes(); renderGroupBar(); renderMyBar();
+    renderNotice(); renderWeeks(); renderProgress(); renderLocked(); renderQuick(); renderMyGrid(); renderBest(); renderPick(); renderSelection();
   }
   function renderAll() {
-    renderView(); renderWho(); renderMyGrid(); renderShared();
+    renderWho(); renderShared();
   }
 
   // ---------- Events ----------
@@ -1147,14 +1208,22 @@ textarea::placeholder { color: var(--muted); }
     renderAll();
   });
 
-  $("weeks").addEventListener("click", function (e) {
-    var b = e.target.closest("button[data-week]");
-    if (!b || state.saving || b.dataset.week === state.week) return;
-    state.week = b.dataset.week;
+  function goWeek(id) {
+    if (state.saving || !weekById(id) || id === state.week) { renderWeeks(); return; }
+    state.week = id;
     state.selected = null;
     showNote(true);
     renderMyGrid(); renderShared();
-  });
+  }
+  $("weekSel").addEventListener("change", function () { goWeek($("weekSel").value); });
+  function stepWeek(by) {
+    var idx = 0;
+    WEEKS.forEach(function (w, i) { if (w.id === state.week) idx = i; });
+    var next = WEEKS[idx + by];
+    if (next) goWeek(next.id);
+  }
+  $("weekPrev").addEventListener("click", function () { stepWeek(-1); });
+  $("weekNext").addEventListener("click", function () { stepWeek(1); });
 
   $("who").addEventListener("click", function (e) {
     var b = e.target.closest("button[data-host]");
@@ -1163,53 +1232,102 @@ textarea::placeholder { color: var(--muted); }
     state.drafts = {};
     refreshDrafts();
     showNote(true);
-    renderWho(); renderMyGrid(); renderWeeks(); renderMyBar();
+    $("qMsg").textContent = "";
+    renderWho(); renderQuick(); renderMyGrid(); renderWeeks(); renderSelection();
   });
+
+  function setCell(btn, add) {
+    var d = draft(), key = +btn.dataset.slot;
+    if (add === d.slots.has(key)) return;
+    if (add) d.slots.add(key); else d.slots.delete(key);
+    paint(btn);
+    d.dirty = true;
+    renderWeeks(); renderSelection();
+  }
+  function toggleCells(cells) {
+    cells = Array.prototype.filter.call(cells, function (b) { return !b.disabled; });
+    if (!cells.length) return;
+    var d = draft();
+    var allOn = cells.every(function (b) { return d.slots.has(+b.dataset.slot); });
+    cells.forEach(function (b) {
+      var k = +b.dataset.slot;
+      if (allOn) d.slots.delete(k); else d.slots.add(k);
+      paint(b);
+    });
+    d.dirty = true;
+    renderWeeks(); renderSelection();
+  }
+
+  // With a mouse: press on an hour and drag across others to paint (or erase) them.
+  var drag = null, skipClick = false;
+  $("myGrid").addEventListener("pointerdown", function (e) {
+    if (e.pointerType === "touch" || e.button !== 0 || !state.me || state.saving) return;
+    var s = e.target.closest("button[data-slot]");
+    if (!s || s.disabled) return;
+    drag = { add: !draft().slots.has(+s.dataset.slot) };
+    skipClick = true;
+    setCell(s, drag.add);
+    e.preventDefault();
+  });
+  $("myGrid").addEventListener("pointerover", function (e) {
+    if (!drag) return;
+    var s = e.target.closest("button[data-slot]");
+    if (s && !s.disabled) setCell(s, drag.add);
+  });
+  // The click that follows a mouse press is ignored (the press already did the work). It doesn't
+  // always arrive, so the flag is also cleared shortly after the button comes up.
+  function endDrag() { drag = null; setTimeout(function () { skipClick = false; }, 80); }
+  window.addEventListener("pointerup", endDrag);
+  window.addEventListener("pointercancel", endDrag);
 
   $("myGrid").addEventListener("click", function (e) {
     if (!state.me || state.saving) return;
-    var d = draft();
     var s = e.target.closest("button[data-slot]");
-    if (s && !s.disabled) {
-      var key = +s.dataset.slot;
-      if (d.slots.has(key)) d.slots.delete(key); else d.slots.add(key);
-      s.setAttribute("aria-pressed", String(d.slots.has(key)));
-      paintMine(s);
-      d.dirty = true;
-      renderWeeks(); renderMyBar();
+    if (s) {
+      if (skipClick) { skipClick = false; return; }   // the mouse press already handled it
+      if (!s.disabled) setCell(s, !draft().slots.has(+s.dataset.slot));
       return;
     }
+    skipClick = false;
     var dayBtn = e.target.closest("button[data-day]");
-    if (dayBtn) {
-      var cells = Array.prototype.filter.call(
-        $("myGrid").querySelectorAll('button[data-date="' + dayBtn.dataset.day + '"]'),
-        function (b) { return !b.disabled; });
-      if (!cells.length) return;
-      var allOn = cells.every(function (b) { return d.slots.has(+b.dataset.slot); });
-      cells.forEach(function (b) {
-        var k = +b.dataset.slot;
-        if (allOn) d.slots.delete(k); else d.slots.add(k);
-        b.setAttribute("aria-pressed", String(!allOn));
-        paintMine(b);
-      });
-      d.dirty = true;
-      renderWeeks(); renderMyBar();
-    }
+    if (dayBtn) { toggleCells($("myGrid").querySelectorAll('button[data-slot][data-date="' + dayBtn.dataset.day + '"]')); return; }
+    var hourBtn = e.target.closest("button.tm[data-hour]");
+    if (hourBtn) toggleCells($("myGrid").querySelectorAll('button[data-slot][data-hour="' + hourBtn.dataset.hour + '"]'));
   });
+
+  $("qDays").addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-i]");
+    if (!b || b.disabled) return;
+    state.quickDays[+b.dataset.i] = !state.quickDays[+b.dataset.i];
+    $("qMsg").textContent = "";
+    renderQuick();
+  });
+  $("quick").addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-set]");
+    if (!b) return;
+    var set = b.dataset.set;
+    state.quickDays = [0, 1, 2, 3, 4, 5, 6].map(function (i) { return set === "all" ? true : set === "weekend" ? i >= 5 : i < 5; });
+    $("qMsg").textContent = "";
+    renderQuick();
+  });
+  $("qFrom").addEventListener("change", function () {
+    state.quickFrom = +$("qFrom").value;
+    if (state.quickUntil <= state.quickFrom) state.quickUntil = state.quickFrom + 1;
+    renderQuick();
+  });
+  $("qUntil").addEventListener("change", function () {
+    state.quickUntil = +$("qUntil").value;
+    if (state.quickFrom >= state.quickUntil) state.quickFrom = state.quickUntil - 1;
+    renderQuick();
+  });
+  $("qAdd").addEventListener("click", function () { quickApply(true); });
+  $("qRemove").addEventListener("click", function () { quickApply(false); });
 
   document.addEventListener("click", function (e) {
     var b = e.target.closest("[data-early]");
     if (!b || b.disabled) return;
     state.early = !state.early;
-    renderMyGrid(); renderGroupGrid();
-  });
-
-  noteEl.addEventListener("input", function () {
-    if (!state.me) return;
-    var d = draft();
-    d.note = noteEl.value;
-    if (!d.dirty) { d.dirty = true; renderWeeks(); }
-    renderMyBar();
+    renderMyGrid();
   });
 
   function writeFailed(err) {
@@ -1230,13 +1348,13 @@ textarea::placeholder { color: var(--muted); }
     });
   }
 
-  $("submitBtn").addEventListener("click", function () {
+  function submit() {
     if (!db || !state.me || state.saving) return;
     var me = state.me, weekId = state.week, d = draft(weekId);
     var slots = Array.from(d.slots).filter(function (k) { return typeof k === "number" && isFinite(k); }).sort(function (a, b) { return a - b; });
     var body = { week: weekId, host: me, slots: slots, note: (d.note || "").trim().slice(0, 500), tz: zone, updatedAt: Date.now() };
     state.saving = true;
-    renderMyBar();
+    renderSelection();
     withRetry(function () { return db.doc("avail/" + weekId + "_" + me).set(body); }).then(function () {
       state.saving = false;
       if (!state.avail[weekId]) state.avail[weekId] = {};
@@ -1246,29 +1364,25 @@ textarea::placeholder { color: var(--muted); }
       renderShared();
     }).catch(function (err) {
       state.saving = false;
-      if (writeFailed(err)) renderMyBar(); else renderShared();
+      if (writeFailed(err)) renderSelection(); else renderShared();
     });
-  });
+  }
+  $("submitBtn").addEventListener("click", submit);
+  $("submitBtn2").addEventListener("click", submit);
 
-  $("groupGrid").addEventListener("click", function (e) {
+  $("best").addEventListener("click", function (e) {
     var b = e.target.closest("button[data-pick]");
     if (!b) return;
     var key = +b.dataset.pick;
     state.selected = state.selected === key ? null : key;
-    renderGroupGrid(); renderGroupBar();
-  });
-  $("best").addEventListener("click", function (e) {
-    var b = e.target.closest("button[data-pick]");
-    if (!b) return;
-    state.selected = +b.dataset.pick;
-    renderGroupGrid(); renderGroupBar();
+    renderMyGrid(); renderBest(); renderPick();
   });
 
-  $("lockBtn").addEventListener("click", function () {
+  function lockIt() {
     if (!db || state.selected == null || state.saving) return;
     var key = state.selected, weekId = state.week, old = lockIn(weekById(weekId));
     state.saving = true;
-    renderGroupBar();
+    renderPick();
     withRetry(function () { return db.doc("locks/" + weekId).set({ slot: key, at: Date.now() }); }).then(function () {
       // A lock made from another zone's calendar can sit under a neighbouring week's name.
       return old && old.id !== weekId ? db.doc("locks/" + old.id).delete() : null;
@@ -1279,9 +1393,10 @@ textarea::placeholder { color: var(--muted); }
       renderShared();
     }).catch(function (err) {
       state.saving = false;
-      if (writeFailed(err)) renderGroupBar(); else renderShared();
+      if (writeFailed(err)) renderPick(); else renderShared();
     });
-  });
+  }
+  $("lockBtn2").addEventListener("click", lockIt);
 
   $("unlockBtn").addEventListener("click", function () {
     var lock = lockIn(weekById(state.week));
@@ -1297,19 +1412,8 @@ textarea::placeholder { color: var(--muted); }
     });
   });
 
-  function setView(v, fromHash) {
-    state.view = v;
-    renderView();
-    if (!fromHash) { try { location.hash = v === "group" ? "group" : "my-times"; } catch (e) {} }
-  }
-  $("tabMine").addEventListener("click", function () { setView("mine"); });
-  $("tabGroup").addEventListener("click", function () { setView("group"); });
-  function readHash() { setView(location.hash === "#group" ? "group" : "mine", true); }
-  window.addEventListener("hashchange", readHash);
-
   // ---------- First paint ----------
   renderZone();
-  readHash();
   renderAll();
 
   // ---------- Reading saved hours ----------
@@ -1534,7 +1638,35 @@ textarea::placeholder { color: var(--muted); }
       renderShared();
     }).catch(function () { state.dbState = "none"; renderShared(); });
   }
-  connect();
+
+  // ---------- Password ----------
+  // A simple shared password, not case sensitive. It keeps passers-by out; it is not strong
+  // security, since anyone who reads this file can see it.
+  var PASSWORD = "pb", LS_PASS = "tpb-pass";
+  function openApp() {
+    $("gate").hidden = true;
+    $("app").hidden = false;
+    connect();
+  }
+  var remembered = false;
+  try { remembered = localStorage.getItem(LS_PASS) === PASSWORD; } catch (e) {}
+  if (remembered) {
+    openApp();
+  } else {
+    $("gate").hidden = false;
+    $("gateForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      var typed = $("gateInput").value.trim().toLowerCase();
+      if (typed === PASSWORD) {
+        try { localStorage.setItem(LS_PASS, PASSWORD); } catch (err) {}
+        openApp();
+      } else {
+        $("gateErr").textContent = typed ? "That's not it. Try again." : "Type the password first.";
+        $("gateInput").value = "";
+        $("gateInput").focus();
+      }
+    });
+  }
 })();
 </script>
 </body>
